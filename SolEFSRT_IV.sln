@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFSRT_IV", "EFSRT_IV\EFSRT_IV.csproj", "{A943448D-4F6E-4A4C-935E-B95B4DAA8634}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A943448D-4F6E-4A4C-935E-B95B4DAA8634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A943448D-4F6E-4A4C-935E-B95B4DAA8634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A943448D-4F6E-4A4C-935E-B95B4DAA8634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A943448D-4F6E-4A4C-935E-B95B4DAA8634}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC14BD85-7B2F-4EE8-83B1-509FE39DEA10}
+	EndGlobalSection
+EndGlobal
