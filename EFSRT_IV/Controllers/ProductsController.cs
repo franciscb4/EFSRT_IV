@@ -12,7 +12,7 @@ namespace EFSRT_IV.Controllers
                 id = 1,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -23,7 +23,7 @@ namespace EFSRT_IV.Controllers
                 id = 2,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -34,7 +34,7 @@ namespace EFSRT_IV.Controllers
                 id = 3,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -45,7 +45,7 @@ namespace EFSRT_IV.Controllers
                 id = 4,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -56,7 +56,7 @@ namespace EFSRT_IV.Controllers
                 id = 5,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -67,7 +67,7 @@ namespace EFSRT_IV.Controllers
                 id = 6,
                 name = "Test",
                 image = "",
-                price = Convert.ToDecimal(10.50),
+                price = 10.50,
                 stock = 40,
                 minStock = 5,
                 maxStock = 80,
@@ -89,6 +89,7 @@ namespace EFSRT_IV.Controllers
         [HttpPost]
         public IActionResult CreateProduct(Product product)
         {
+            product.state = true;
             list.Add(product);
             return RedirectToAction("FindAllProducts");
         }

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<EFSRT_IV.Models.SellDetail>
+
+@{
+    ViewData["Title"] = "FindSell";
+}
+
+<div class="d-flex justify-content-start align-items-center gap-3">
+    <a asp-action="FindAllSells" class="d-flex justify-content-center align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+        </svg>
+    </a>
+    <h1>Venta 1</h1>
+</div>
+<hr />
+
+<div class="w-100">
+    <p class="h5">CLiente: @ViewBag.client</p>
+    <p class="h5">Total: @ViewBag.total</p>
+    <p class="h5">Fecha: @ViewBag.date</p>
+
+    <table class="table table-striped w-50">
+        <thead>
+            <tr>
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Cantidad
+                </th>
+                <th>
+                    Unidad
+                </th>
+                <th>
+                    Subtotal
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.singlePrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.subtotal)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

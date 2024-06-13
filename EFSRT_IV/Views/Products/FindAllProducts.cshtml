@@ -7,6 +7,10 @@
 <h1>Productos</h1>
 <hr />
 
+<div class="mb-4">
+    <a asp-action="CreateProduct" class="btn btn-primary">Registrar producto</a>
+</div>
+
 <div class="w-100">
     <ul class="w-100 d-flex flex-wrap justify-content-center gap-4">
     @foreach (var item in Model)
@@ -23,10 +27,6 @@
         </li>
     }
     </ul>
-</div>
-
-<div>
-    <a asp-action="CreateProduct" class="btn btn-primary">Registrar producto</a>
 </div>
 
 <div id="sideBar">

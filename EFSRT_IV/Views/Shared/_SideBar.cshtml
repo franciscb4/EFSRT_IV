@@ -1,6 +1,16 @@
-﻿<div class="bg-dark vh-100 position-absolute top-0 start-0" style="width: 300px">
+﻿<div class="bg-dark vh-100 position-absolute top-0 start-0 z-3" style="width: 250px">
     <div class="w-75 my-5 mx-auto">
-        <p class="text-white h2 mb-4">Tienda 1</p>
+
+
+        <div class="mb-4 text-white d-flex justify-content-start align-items-center gap-3">
+            <a asp-action="" asp-controller="User" class="d-flex justify-content-center align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                </svg>
+            </a>
+            <p class="h2">Tienda 1</p>
+        </div>
+
         <ul class="nav nav-pills d-flex flex-column">
             <li class="nav-item">
                 <a class="nav-link text-white h5" asp-action="Panel" asp-controller="Store">Panel</a>
@@ -9,7 +19,7 @@
                 <a class="nav-link text-white h5" asp-action="FindAllProducts" asp-controller="Products">Productos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white h5" asp-action="" asp-controller="User" >Ventas</a>
+                <a class="nav-link text-white h5" asp-action="FindAllSells" asp-controller="Sell" >Ventas</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white h5" asp-action="" asp-controller="User" >Informes</a>
@@ -17,3 +27,4 @@
         </ul>
     </div>
 </div>
+

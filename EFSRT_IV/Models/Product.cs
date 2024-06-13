@@ -6,7 +6,7 @@
         public string name { get; set; }
         public string image { get; set; }
         public string category { get; set; }
-        public decimal price { get; set; }
+        public double price { get; set; }
         public int stock { get; set; }
         public int minStock { get; set; }
         public int maxStock { get; set; }

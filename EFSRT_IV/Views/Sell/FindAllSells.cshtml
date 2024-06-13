@@ -1,0 +1,58 @@
+﻿@model IEnumerable<EFSRT_IV.Models.Sell>
+
+@{
+    ViewData["Title"] = "FindAllSells";
+}
+
+<h1>Ventas</h1>
+<hr />
+
+<table class="table table-striped w-75">
+    <thead>
+        <tr>
+            <th>
+                Nro.
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Total
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.client)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.total)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+                <td>
+                    @Html.ActionLink("Ver", "FindSell", new { id = item.id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="sideBar">
+</div>
+@section Scripts {
+    <script>
+        $("#sideBar").load("/Store/SideBar")
+    </script>
+}

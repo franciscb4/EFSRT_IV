@@ -3,28 +3,29 @@
     ViewData["Title"] = "Panel";
 }
 
-@Html.Partial("_SideBar")
-
-<div class="d-flex justify-content-start align-items-center gap-3">
-    <a asp-action="Index" asp-controller="User" class="d-flex justify-content-center align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-        </svg>
-    </a>
-    <h1>Tienda : UNO | Resumen General</h1>
-</div>
+<h1>Resumen General</h1>
 <hr />
 
 <div class="w-100">
-    <div class="w-75 me-auto border p-5 d-flex flex-wrap gap-4">
-        <div class="w-25 border p-5">
-            <span>NUMERO UNO</span>
+    <div class="mx-auto py-4 row" style="width: 85%; height: 700px">
+        <div class="w-50 d-flex flex-column justify-content-evenly gap-4">
+            <div class="mx-auto h-50 border border-4" style="width:90%">
+                <p class="p-5 text-center h5 mt-auto">
+                    Ingresos
+                </p>
+            </div>
+            <div class="mx-auto h-50 border border-4" style="width:90%">
+                <p class="p-5 text-center h5">
+                    Informes
+                </p>
+            </div>
         </div>
-        <div class="w-25 border p-5">
-            <span>NUMERO DOS</span>
-        </div>
-        <div class="w-25 border p-5">
-            <span>NUMERO TRES</span>
+        <div class="w-50 h-100">
+            <div class="d-block h-100 border border-4" style="width: 95%">
+                <p class="p-5 text-center h5">
+                    Ventas
+                </p>
+            </div>
         </div>
     </div>
 </div>
