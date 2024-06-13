@@ -1,0 +1,59 @@
+﻿@model EFSRT_IV.Models.Product
+
+@{
+    ViewData["Title"] = "UpdateProduct";
+}
+
+<h1>Actualizar producto</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateProduct">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label>Nombre:</label>
+                <input asp-for="image" class="form-control" />
+                <span asp-validation-for="image" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label>Categoria:</label>
+                <input asp-for="category" class="form-control" />
+                <span asp-validation-for="category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Precio:</label>
+                <input asp-for="price" class="form-control" />
+                <span asp-validation-for="price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Stock:</label>
+                <input asp-for="stock" class="form-control" />
+                <span asp-validation-for="stock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Stock mínimo:</label>
+                <input asp-for="minStock" class="form-control" />
+                <span asp-validation-for="minStock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Stock máximo:</label>
+                <input asp-for="maxStock" class="form-control" />
+                <span asp-validation-for="maxStock" class="text-danger"></span>
+            </div>
+
+            <div class="my-2 form-group d-flex justify-content-start align-items-center gap-3">
+                <input type="submit" value="Actualizar" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Find" asp-route-id="@Model.id">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

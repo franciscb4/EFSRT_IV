@@ -15,7 +15,6 @@ namespace EFSRT_IV.Controllers
 
         public IActionResult Index()
         {
-            Debug.WriteLine("awdsfbgnasfgdagdafa as afsf sasfa   asdsaassa dasdsda as ");
             return View();
         }
 

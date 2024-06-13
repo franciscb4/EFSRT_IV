@@ -1,0 +1,38 @@
+﻿@model IEnumerable<EFSRT_IV.Models.Product>
+
+@{
+    ViewData["Title"] = "FindAllProducts";
+}
+
+<h1>Productos</h1>
+<hr />
+
+<div class="w-100">
+    <ul class="w-100 d-flex flex-wrap justify-content-center gap-4">
+    @foreach (var item in Model)
+    {
+        <li class="border border-3" style="width: 18rem; list-style: none">
+            <div class="card w-100">
+                <img src="~/@item.image" class="card-img-top" alt="..." style="min-width: 50px; min-height: 60px">
+                <div class="card-body">
+                    <a class="d-block w-100 w-100" asp-action="Find" asp-route-id="@item.id" asp-controller="Products">
+                        @item.name
+                    </a>
+                </div>
+            </div>
+        </li>
+    }
+    </ul>
+</div>
+
+<div>
+    <a asp-action="CreateProduct" class="btn btn-primary">Registrar producto</a>
+</div>
+
+<div id="sideBar">
+</div>
+@section Scripts {
+    <script>
+        $("#sideBar").load("/Store/SideBar")
+    </script>
+}
