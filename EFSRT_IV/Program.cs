@@ -1,4 +1,4 @@
-using DB;
+using DB.Models;
 using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
 
