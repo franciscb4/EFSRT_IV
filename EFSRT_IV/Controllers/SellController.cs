@@ -26,19 +26,14 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("Index", "User");
             int storeId = Convert.ToInt32(sessionStoreId);
 
-            var list = _context.Venta
-                //.Include(v => v.DetalleVenta)
+            var firstList = _context.Venta
                 .Where(v => v.IdTienda == storeId)
                 .ToList();
 
-            ////SETTLED PARA EVITAR VALORES REPETIDOS
-            //var settedList = firstList
-            //    .Where(v =>
-            //        !(v.IdVenta > (firstList.Last().IdVenta / 2)))
-            //    .ToList();
-            //List<Sell> list = settedList
-            //    .Select(v => mapperSell(v))
-            //    .ToList();
+            List<Sell> list = firstList
+                .Select(v => mapperSell(v))
+                .ToList();
+
             return View(list);
         }
 
