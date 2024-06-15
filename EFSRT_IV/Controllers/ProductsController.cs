@@ -139,6 +139,7 @@ namespace EFSRT_IV.Controllers
                 Stock = product.stock,
                 IdCategoria = product.category,
                 IdTienda = storeId,
+                Estado = product.state
             });
             _context.SaveChanges();
             return RedirectToAction("Find", new { id = product.id });
