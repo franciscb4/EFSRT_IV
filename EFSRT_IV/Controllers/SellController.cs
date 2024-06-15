@@ -1,121 +1,100 @@
-﻿using EFSRT_IV.Models;
+﻿using DB;
+using EFSRT_IV.Models;
+using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace EFSRT_IV.Controllers
 {
     public class SellController : Controller
     {
-        static List<SellDetail> details = new List<SellDetail>()
-        {
-            new SellDetail()
-            {
-                id = 1,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            },
-            new SellDetail()
-            {
-                id = 2,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            },
-            new SellDetail()
-            {
-                id = 3,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            },
-            new SellDetail()
-            {
-                id = 4,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            },
-            new SellDetail()
-            {
-                id = 5,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            },
-            new SellDetail()
-            {
-                id = 6,
-                product = "Cifrut",
-                singlePrice = 2.00,
-                quantity = 5,
-                subtotal = 10.00
-            }
-        };
 
-        static List<Sell> list = new List<Sell>()
+        private readonly EfsrtIvContext _context;
+        public SellController(EfsrtIvContext context)
         {
-            new Sell()
-            {
-                id = 1,
-                client = "uno",
-                total = 20.50,
-                date = DateTime.Now,
-                details = details
-            },
-            new Sell()
-            {
-                id = 2,
-                client = "uno",
-                total = 20.50,
-                date = DateTime.Now,
-                details = details
-            },
-            new Sell()
-            {
-                id = 3,
-                client = "uno",
-                total = 20.50,
-                date = DateTime.Now,
-                details = details
-            },
-            new Sell()
-            {
-                id = 4,
-                client = "uno",
-                total = 20.50,
-                date = DateTime.Now,
-                details = details
-            },
-            new Sell()
-            {
-                id = 5,
-                client = "uno",
-                total = 20.50,
-                date = DateTime.Now,
-                details = details
-            },
-        };
+            _context = context;
+        }
 
         public IActionResult FindAllSells()
         {
+            //OBTENER Y VALIDAR ID DE LA TIENDA ACTUAL
+            string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
+            if (sessionStoreId.IsNullOrEmpty())
+                return RedirectToAction("Index", "User");
+            int storeId = Convert.ToInt32(sessionStoreId);
+
+            var firstList = _context.Venta
+                //.Include(v => v.DetalleVenta)
+                .Where(v => v.IdTienda == storeId)
+                .ToList();
+
+            //SETTLED PARA EVITAR VALORES REPETIDOS
+            var settedList = firstList
+                .Where(v =>
+                    !(v.IdVenta > (firstList.Last().IdVenta / 2)))
+                .ToList();
+            List<Sell> list = settedList
+                .Select(v => mapperSell(v))
+                .ToList();
             return View(list);
         }
 
         public IActionResult FindSell(int id)
         {
-            Sell? found = list.Find(x => x.id == id) ?? null;
+            //BUSCAR Y VALIDAR VENTA DE LA BD
+            var found = _context.Venta
+                .Include(v => v.DetalleVenta)
+                .FirstOrDefault(v => v.IdVenta == id);
+
             if (found == null) return RedirectToAction("FindAllSells");
 
-            ViewBag.client = found.client;
-            ViewBag.total = found.total;
-            ViewBag.date = found.date;
-            return View(found.details);
+            //GUARDAR DATOS UNICOS DE LA VENTA EN LA VIEWBAG
+            ViewBag.total = found.Monto;
+            ViewBag.date = found.Fecha.ToString("dd/MM/yyyy");
+
+            //MAPEAR DE OBJETOS DE LA BD A OBJETOS QUE RECIBE LA VISTA
+            List<SellDetail> details = new List<SellDetail>();
+            for (int i=0; i < found.DetalleVenta.Count; i++)
+            {
+                var iterated = found.DetalleVenta.ElementAt(i);
+                var productoFound = _context.Productos
+                    .FirstOrDefault(p => p.IdProducto == iterated.IdProducto);
+                if (productoFound == null) return RedirectToAction("FindAllSells");
+
+                details.Add(mapperSellDetail(
+                    iterated,
+                    productoFound.Nombre,
+                    Convert.ToDouble(productoFound.Precio)));
+            }
+
+            return View(details);
         }
+
+        private static Sell mapperSell(Ventum v)
+        {
+            return new Sell()
+            {
+                id = v.IdVenta,
+                date = v.Fecha,
+                total = Convert.ToDouble(v.Monto)
+            };
+        } 
+
+        private static SellDetail mapperSellDetail(DetalleVentum dv, string productoName, double productoPrice)
+        {
+            return new SellDetail()
+            {
+                id = dv.IdDetalleVenta,
+                product = productoName,
+                quantity = dv.Cantidad,
+                singlePrice = productoPrice,
+                subtotal = Convert.ToDouble(dv.Subtotal)
+            };
+        }
+
+        private string getFromSession(string key) => HttpContext.Session.GetString(key);
     }
 }

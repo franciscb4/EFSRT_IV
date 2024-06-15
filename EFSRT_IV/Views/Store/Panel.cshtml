@@ -1,4 +1,4 @@
-﻿
+﻿@model DB.Tiendum;
 @{
     ViewData["Title"] = "Panel";
 }
@@ -10,21 +10,21 @@
     <div class="mx-auto py-4 row" style="width: 85%; height: 700px">
         <div class="w-50 d-flex flex-column justify-content-evenly gap-4">
             <div class="mx-auto h-50 border border-4" style="width:90%">
-                <p class="p-5 text-center h5 mt-auto">
+                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Ingresos
-                </p>
+                </a>
             </div>
             <div class="mx-auto h-50 border border-4" style="width:90%">
-                <p class="p-5 text-center h5">
+                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Informes
-                </p>
+                </a>
             </div>
         </div>
         <div class="w-50 h-100">
             <div class="d-block h-100 border border-4" style="width: 95%">
-                <p class="p-5 text-center h5">
+                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Ventas
-                </p>
+                </a>
             </div>
         </div>
     </div>

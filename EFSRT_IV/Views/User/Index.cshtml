@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<DB.Tiendum>
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,18 +8,15 @@
 <hr />
 
 <div class="w-100">
-    <div class="w-50 me-auto d-flex justify-content-evenly gap-4">
-        <div class="border">
-            <a asp-action="Panel" asp-controller="Store">
-                <img />
-                <span>Tienda 1</span>
-            </a>
-        </div>
-        <div class="border">
-            <a asp-action="Panel" asp-controller="Store">
-                <img />
-                <span>Tienda 2</span>
-            </a>
-        </div>
+    <div class="w-50 me-auto d-flex flex-wrap justify-content-evenly gap-4">
+        @foreach (var item in Model)
+        {
+            <div class="border">
+                <a asp-action="Panel" asp-route-store="@item.IdTienda" asp-controller="Store">
+                    <img />
+                    <span>@item.Nombre</span>
+                </a>
+            </div>
+        }
     </div>
 </div>

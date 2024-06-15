@@ -7,47 +7,48 @@
 <h1>Ventas</h1>
 <hr />
 
-<table class="table table-striped w-75">
-    <thead>
-        <tr>
-            <th>
-                Nro.
-            </th>
-            <th>
-                Cliente
-            </th>
-            <th>
-                Total
-            </th>
-            <th>
-                Fecha
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="w-50 overflow-scroll" style="max-height: 50vh">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.client)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.total)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.date)
-                </td>
-                <td>
-                    @Html.ActionLink("Ver", "FindSell", new { id = item.id })
-                </td>
+                <th>
+                    Nro.
+                </th>
+                <th>
+                    Total
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th></th>
             </tr>
+        </thead>
+        <tbody>
+        @{
+            int nro = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @nro
+                        @* @Html.DisplayFor(modelItem => item.id) *@
+                    </td>
+                    <td>
+                        S/@Html.DisplayFor(modelItem => item.total)
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(item.date).ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @Html.ActionLink("Ver", "FindSell", new { id = item.id })
+                    </td>
+                </tr>
+                nro++;
+            }
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
 <div id="sideBar">
 </div>

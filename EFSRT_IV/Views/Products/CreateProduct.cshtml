@@ -12,44 +12,28 @@
         <form asp-action="CreateProduct">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label>Nombre:</label>
+            <div class="form-group my-2">
+                <label class="form-label">Nombre:</label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
-
-          @*<div class="form-group">
-                <label>:</label>
-                <input asp-for="image" class="form-control" />
-                <span asp-validation-for="image" class="text-danger"></span>
-            </div> *@
-
-            <div class="form-group">
-                <label>Categoria:</label>
-                <input asp-for="category" class="form-control" />
-                <span asp-validation-for="category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Precio:</label>
+            <div class="form-group my-2">
+                <label class="form-label">Precio:</label>
                 <input asp-for="price" class="form-control" />
                 <span asp-validation-for="price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label>Stock:</label>
+            <div class="form-group my-2">
+                <label class="form-label">Categoria:</label>
+                <select asp-for="category" class="form-select" asp-items="ViewBag.categorias"></select>
+                <span asp-validation-for="stock" class="text-danger"></span>
+            </div>
+            <div class="form-group my-2">
+                <label class="form-label">Stock:</label>
                 <input asp-for="stock" class="form-control" />
                 <span asp-validation-for="stock" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label>Stock mínimo:</label>
-                <input asp-for="minStock" class="form-control" />
-                <span asp-validation-for="minStock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Stock máximo:</label>
-                <input asp-for="maxStock" class="form-control" />
-                <span asp-validation-for="maxStock" class="text-danger"></span>
-            </div>
-            <span class="my-2 d-block">Por defecto, los productos recién registrados estarán habilitados.</span>
+
+            <span class="my-3 d-block">Por defecto, los productos recién registrados estarán habilitados.</span>
    
             <div class="form-group d-flex justify-content-start align-items-center gap-3">
                 <input type="submit" value="Guardar" class="btn btn-primary" />

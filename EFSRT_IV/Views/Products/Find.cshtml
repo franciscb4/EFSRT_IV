@@ -9,64 +9,48 @@
 
 <div>
     <dl class="row">
-
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            Nombre:
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.name)
         </dd>
 
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.image)
+            Precio:
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.image)
+            S/@Html.DisplayFor(model => model.price)
         </dd>
 
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.price)
-        </dd>
-
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.stock)
+            Stock
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.stock)
         </dd>
 
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.minStock)
+            Categoria
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.minStock)
-        </dd>
-
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.maxStock)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.maxStock)
-        </dd>
-
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.state)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.state)
+            @ViewBag.categoria
         </dd>
     </dl>
+    @if (!Model.state)
+    {
+        <p class="h5 text-secondary">
+            Producto desabilitado actualmente.
+        </p>
+    }
 </div>
 
 <div class="d-flex justify-content-start align-items-center gap-3">
     <a asp-action="UpdateProduct" asp-route-id="@Model.id" class="btn btn-secondary">
         Editar
     </a>
-    <a asp-action="DisableProduct" asp-route-id="@Model.id" class="btn btn-secondary">
-        Desabilitar
+    <a asp-action="ChangeStateProduct" asp-route-id="@Model.id" asp-route-state="@(!(Model.state))" class="btn btn-secondary">
+        @(Model.state ? "Desabilitar" : "Habilitar")
     </a>
     <a asp-action="FindAllProducts" class="btn btn-secondary">
         Volver
