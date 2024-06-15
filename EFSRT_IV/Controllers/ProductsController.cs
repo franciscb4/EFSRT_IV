@@ -1,4 +1,4 @@
-﻿using DB;
+﻿using DB.Models;
 using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -143,7 +143,6 @@ namespace EFSRT_IV.Controllers
             _context.SaveChanges();
             return RedirectToAction("Find", new { id = product.id });
         }
-
         public IActionResult ChangeStateProduct(int id, bool state)
         {
             //OBTENER Y VALIDAR ID DE LA TIENDA ACTUAL

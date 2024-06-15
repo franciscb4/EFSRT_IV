@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DB;
+namespace DB.Models;
 
 public partial class Usuario
 {

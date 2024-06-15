@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace DB;
+namespace DB.Models;
 
 public partial class EfsrtIvContext : DbContext
 {
@@ -17,8 +17,6 @@ public partial class EfsrtIvContext : DbContext
 
     public virtual DbSet<Categorium> Categoria { get; set; }
 
-    public virtual DbSet<Cliente> Clientes { get; set; }
-
     public virtual DbSet<DetalleVentum> DetalleVenta { get; set; }
 
     public virtual DbSet<Producto> Productos { get; set; }
@@ -30,24 +28,14 @@ public partial class EfsrtIvContext : DbContext
     public virtual DbSet<Ventum> Venta { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:sql");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("SERVER=LEON;DataBase=EFSRT_IV;Integrated Security=true;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Categorium>(entity =>
         {
-            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__A3C02A10AFA03E3C");
-
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<Cliente>(entity =>
-        {
-            entity.HasKey(e => e.IdCliente).HasName("PK__Cliente__D5946642B662CC1B");
-
-            entity.ToTable("Cliente");
+            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__A3C02A10B2209803");
 
             entity.Property(e => e.Nombre)
                 .HasMaxLength(255)
@@ -56,9 +44,14 @@ public partial class EfsrtIvContext : DbContext
 
         modelBuilder.Entity<DetalleVentum>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleVenta).HasName("PK__DetalleV__AAA5CEC2B40A2DC5");
+            entity.HasKey(e => e.IdDetalleVenta).HasName("PK__DetalleV__AAA5CEC252BD126B");
 
-            entity.Property(e => e.Subtotal).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.DetalleVenta)
+                .HasForeignKey(d => d.IdProducto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DetalleVentaProducto_IdProducto");
 
             entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.DetalleVenta)
                 .HasForeignKey(d => d.IdVenta)
@@ -68,7 +61,7 @@ public partial class EfsrtIvContext : DbContext
 
         modelBuilder.Entity<Producto>(entity =>
         {
-            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__098892102DBAE4A4");
+            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__098892104555EEA2");
 
             entity.ToTable("Producto");
 
@@ -91,7 +84,7 @@ public partial class EfsrtIvContext : DbContext
 
         modelBuilder.Entity<Tiendum>(entity =>
         {
-            entity.HasKey(e => e.IdTienda).HasName("PK__Tienda__5A1EB96BD0C5CC97");
+            entity.HasKey(e => e.IdTienda).HasName("PK__Tienda__5A1EB96B76530F3D");
 
             entity.Property(e => e.Nombre)
                 .HasMaxLength(255)
@@ -105,13 +98,13 @@ public partial class EfsrtIvContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF975C0CDE5F");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF97AB60C2C0");
 
             entity.ToTable("Usuario");
 
-            entity.HasIndex(e => e.Correo, "UQ__Usuario__60695A192E66D117").IsUnique();
+            entity.HasIndex(e => e.Correo, "UQ__Usuario__60695A19AECBFF34").IsUnique();
 
-            entity.HasIndex(e => e.Dni, "UQ__Usuario__C035B8DD98BCFBB2").IsUnique();
+            entity.HasIndex(e => e.Dni, "UQ__Usuario__C035B8DD36464CBD").IsUnique();
 
             entity.Property(e => e.Clave)
                 .HasMaxLength(255)
@@ -134,16 +127,12 @@ public partial class EfsrtIvContext : DbContext
 
         modelBuilder.Entity<Ventum>(entity =>
         {
-            entity.HasKey(e => e.IdVenta).HasName("PK__Venta__BC1240BD7B02260C");
+            entity.HasKey(e => e.IdVenta).HasName("PK__Venta__BC1240BD33237F79");
 
             entity.Property(e => e.Fecha)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Monto).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Venta)
-                .HasForeignKey(d => d.IdCliente)
-                .HasConstraintName("FK_VentaCliente_IdCliente");
 
             entity.HasOne(d => d.IdTiendaNavigation).WithMany(p => p.Venta)
                 .HasForeignKey(d => d.IdTienda)

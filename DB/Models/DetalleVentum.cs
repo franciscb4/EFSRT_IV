@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DB;
+namespace DB.Models;
 
 public partial class DetalleVentum
 {
@@ -14,6 +14,8 @@ public partial class DetalleVentum
     public decimal Subtotal { get; set; }
 
     public int IdVenta { get; set; }
+
+    public virtual Producto IdProductoNavigation { get; set; } = null!;
 
     public virtual Ventum IdVentaNavigation { get; set; } = null!;
 }

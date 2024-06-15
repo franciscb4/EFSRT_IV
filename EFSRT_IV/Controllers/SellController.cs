@@ -1,4 +1,4 @@
-﻿using DB;
+﻿using DB.Models;
 using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;

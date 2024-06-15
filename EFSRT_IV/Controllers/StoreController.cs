@@ -1,4 +1,4 @@
-﻿using DB;
+﻿using DB.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EFSRT_IV.Controllers
