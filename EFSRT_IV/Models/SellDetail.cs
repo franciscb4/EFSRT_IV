@@ -5,16 +5,8 @@
         public int id { get; set; }
         public string product { get; set; }
         public int quantity { get; set; }
-        public double singlePrice{ get; set; }
-        public double subtotal { get; set; }
+        public decimal singlePrice { get; set; }
+        public decimal subtotal { get; set; }
 
-        public SellDetail()
-        {
-            id = 0;
-            product = "";
-            quantity = 0;
-            singlePrice = 0;
-            subtotal = 0;
-        }
     }
 }

@@ -15,7 +15,6 @@
 <hr />
 
 <div class="w-100">
-    <p class="h5">CLiente: @ViewBag.client</p>
     <p class="h5">Total: S/@ViewBag.total</p>
     <p class="h5">Fecha: @ViewBag.date</p>
 
@@ -46,10 +45,10 @@
                     @Html.DisplayFor(modelItem => item.quantity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.singlePrice)
+                    S/@Html.DisplayFor(modelItem => item.singlePrice)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.subtotal)
+                    S/@Html.DisplayFor(modelItem => item.subtotal)
                 </td>
             </tr>
         }

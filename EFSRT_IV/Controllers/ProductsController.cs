@@ -171,7 +171,7 @@ namespace EFSRT_IV.Controllers
             {
                 id = p.IdProducto,
                 name = p.Nombre,
-                price = Convert.ToDouble(p.Precio),
+                price = p.Precio,
                 category = p.IdCategoria,
                 stock = p.Stock,
                 state = p.Estado

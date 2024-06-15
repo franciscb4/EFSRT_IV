@@ -26,19 +26,19 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("Index", "User");
             int storeId = Convert.ToInt32(sessionStoreId);
 
-            var firstList = _context.Venta
+            var list = _context.Venta
                 //.Include(v => v.DetalleVenta)
                 .Where(v => v.IdTienda == storeId)
                 .ToList();
 
-            //SETTLED PARA EVITAR VALORES REPETIDOS
-            var settedList = firstList
-                .Where(v =>
-                    !(v.IdVenta > (firstList.Last().IdVenta / 2)))
-                .ToList();
-            List<Sell> list = settedList
-                .Select(v => mapperSell(v))
-                .ToList();
+            ////SETTLED PARA EVITAR VALORES REPETIDOS
+            //var settedList = firstList
+            //    .Where(v =>
+            //        !(v.IdVenta > (firstList.Last().IdVenta / 2)))
+            //    .ToList();
+            //List<Sell> list = settedList
+            //    .Select(v => mapperSell(v))
+            //    .ToList();
             return View(list);
         }
 
@@ -67,9 +67,9 @@ namespace EFSRT_IV.Controllers
                 details.Add(mapperSellDetail(
                     iterated,
                     productoFound.Nombre,
-                    Convert.ToDouble(productoFound.Precio)));
+                    productoFound.Precio
+                    ));
             }
-
             return View(details);
         }
 
@@ -79,11 +79,11 @@ namespace EFSRT_IV.Controllers
             {
                 id = v.IdVenta,
                 date = v.Fecha,
-                total = Convert.ToDouble(v.Monto)
+                total = v.Monto
             };
         } 
 
-        private static SellDetail mapperSellDetail(DetalleVentum dv, string productoName, double productoPrice)
+        private static SellDetail mapperSellDetail(DetalleVentum dv, string productoName, decimal productoPrice)
         {
             return new SellDetail()
             {
@@ -91,7 +91,7 @@ namespace EFSRT_IV.Controllers
                 product = productoName,
                 quantity = dv.Cantidad,
                 singlePrice = productoPrice,
-                subtotal = Convert.ToDouble(dv.Subtotal)
+                subtotal = dv.Subtotal
             };
         }
 
