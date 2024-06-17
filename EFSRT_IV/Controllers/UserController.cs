@@ -17,6 +17,7 @@ namespace EFSRT_IV.Controllers
 
         public IActionResult UserIconButton()
         {
+            //NO VALIDA QUE EXISTA USUARIO ACTUAL PORQUE NO SE COMO MANEJAR UN PARTIALVIEW xd
             string sessionUserId = getFromSession(Constants.SESSION_USER_ID_KEY);
             int userId = Convert.ToInt32(sessionUserId);
             ViewBag.logged = userId > 0 ? true : false;
@@ -25,8 +26,12 @@ namespace EFSRT_IV.Controllers
             ViewBag.userName = userName;
             return PartialView("_UserIconButton");
         }
-        public IActionResult Index()
+        public IActionResult Index(bool? leave = null)
         {
+            //RUTA PARA SALIR DE UNA TIENDA
+            if (leave != null && (bool)leave)
+                unsetStoreInSession();
+
             //OBTENER Y VALIDAR ID DEL USUARIO ACTUAL
             string sessionUserId = getFromSession(Constants.SESSION_USER_ID_KEY);
             if (sessionUserId.IsNullOrEmpty())
@@ -94,6 +99,11 @@ namespace EFSRT_IV.Controllers
             HttpContext.Session.SetString(Constants.SESSION_USER_ID_KEY, id);
             HttpContext.Session.SetString(Constants.SESSION_USER_NAME_KEY, name);
             HttpContext.Session.SetString("logged", true.ToString());
+        }
+        private void unsetStoreInSession()
+        {
+            HttpContext.Session.Remove(Constants.SESSION_STORE_ID_KEY);
+            HttpContext.Session.Remove(Constants.SESSION_STORE_NAME_KEY);
         }
     }
 }

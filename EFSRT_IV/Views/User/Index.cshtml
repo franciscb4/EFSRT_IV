@@ -7,16 +7,24 @@
 <h1>Mis negocios</h1>
 <hr />
 
-<div class="w-100">
-    <div class="w-50 me-auto d-flex flex-wrap justify-content-evenly gap-4">
-        @foreach (var item in Model)
-        {
-            <div class="border">
-                <a asp-action="Panel" asp-route-store="@item.IdTienda" asp-controller="Store">
-                    <img />
-                    <span>@item.Nombre</span>
-                </a>
-            </div>
-        }
-    </div>
+<div class="mb-4">
+    <a asp-action="CreateStore" asp-controller="Store" class="btn btn-primary">
+        Registrar nuevo negocio
+    </a>
+</div>
+
+<div class="w-100 me-auto ms-0 row flex-wrap justify-content-start gap-5">
+    @foreach (var item in Model)
+    {
+        <div class="rounded-3 col-4 bg-dark-subtle" style="width: 330px">
+            <a asp-action="Panel" asp-route-store="@item.IdTienda" asp-controller="Store"
+                class="w-100 h-100 py-4 text-decoration-none link-dark d-flex justify-content-evenly align-items-center">
+                <img src="~/images/store/store.png" alt="..." style="width: 100px; height: 100px; filter: invert(10%)" />
+
+                <span class="h4">
+                    @item.Nombre
+                </span>
+            </a>
+        </div>
+    }
 </div>

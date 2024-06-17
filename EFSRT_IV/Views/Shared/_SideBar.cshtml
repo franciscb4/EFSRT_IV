@@ -1,32 +1,65 @@
-﻿<div class="bg-dark vh-100 position-absolute top-0 start-0 z-3" style="width: 15vw">
-    <div class="w-75 my-5 mx-auto">
+﻿
 
+<button 
+    class="btn btn-primary d-flex justify-content-center align-items-center py-2 gap-2 position-absolute z-3"
+    style="top: 200px; left: 10px" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+    @* <span class="h5">Abrir opciones</span> *@
+    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+    </svg>
 
-        <div class="mb-4 text-white d-flex flex-wrap justify-content-start align-items-center gap-3">
-            <a asp-action="Index" asp-controller="User" class="d-flex justify-content-center align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-                </svg>
-            </a>
-            <p class="h2">
-                @ViewBag.storeName
-            </p>
+</button>
+
+<div class="offcanvas offcanvas-start bg-dark" data-bs-scroll="true"  tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <div class="w-75 mx-auto">
+
+            <div class="mb-4 text-white d-flex flex-wrap justify-content-start align-items-center gap-3">
+                <a asp-action="Index" asp-route-leave="true" asp-controller="User" class="d-flex justify-content-center align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                    </svg>
+                </a>
+                <p class="h2 mb-1">
+                    @ViewBag.storeName
+                </p>
+            </div>
+
+            <ul class="nav nav-pills d-flex flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white h5" asp-action="Panel" asp-route-store="@ViewBag.storeId" asp-controller="Store">Resumen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white h5" asp-action="FindAllProducts" asp-controller="Products">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white h5" asp-action="FindAllSells" asp-controller="Sell">Ventas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white h5" asp-action="Informes" asp-route-store="@ViewBag.storeId" asp-controller="User">Informes</a>
+                </li>
+            </ul>
         </div>
 
-        <ul class="nav nav-pills d-flex flex-column">
-            <li class="nav-item">
-                <a class="nav-link text-white h5" asp-action="Panel" asp-route-store="@ViewBag.storeId" asp-controller="Store">Panel</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white h5" asp-action="FindAllProducts" asp-controller="Products">Productos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white h5" asp-action="FindAllSells" asp-route-store="@ViewBag.storeId" asp-controller="Sell">Ventas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white h5" asp-action="Informes" asp-route-store="@ViewBag.storeId" asp-controller="User">Informes</a>
-            </li>
-        </ul>
     </div>
-</div>
+@* 
+    <div class="bg-dark vh-100 position-absolute top-0 start-0 z-3" style="width: 15vw">
+        <div class="w-75 my-5 mx-auto">
+        </div>
+    </div> *@
 
+
+
+    @* <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+    </div> *@
+</div>

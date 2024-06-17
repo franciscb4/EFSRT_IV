@@ -25,7 +25,7 @@
             <div class="form-group my-2">
                 <label class="form-label">Categoria:</label>
                 <select asp-for="category" class="form-select" asp-items="ViewBag.categorias"></select>
-                <span asp-validation-for="stock" class="text-danger"></span>
+                <span asp-validation-for="category" class="text-danger"></span>
             </div>
             <div class="form-group my-2">
                 <label class="form-label">Stock:</label>
@@ -44,3 +44,12 @@
         </form>
     </div>
 </div>
+
+
+<div id="sideBar">
+</div>
+@section Scripts {
+    <script>
+        $("#sideBar").load("/Store/SideBar")
+    </script>
+}
