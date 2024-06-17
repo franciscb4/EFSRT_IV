@@ -34,7 +34,26 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("Index", "User");
 
             setStoreInSession(found.IdTienda.ToString(), found.Nombre);
-            return View();
+
+            var endDate = DateTime.Now;
+            var startDate = endDate.AddDays(-30);
+
+            var ventas = _context.Venta
+                .Where(v => v.Fecha >= startDate && v.Fecha <= endDate)
+                .GroupBy(v => v.Fecha.Date)
+                .Select(g => new { Fecha = g.Key, Total = g.Sum(v => v.Monto) })
+                .ToList();
+
+            var ventasLabels = ventas.Select(v => v.Fecha.ToString("dd MMM")).ToList();
+            var ventasData = ventas.Select(v => v.Total).ToList();
+
+            var model = new ChartViewModel
+            {
+                VentasLabels = ventasLabels,
+                VentasData = ventasData
+            };
+
+            return View(model);
         }
 
         public IActionResult CreateStore()

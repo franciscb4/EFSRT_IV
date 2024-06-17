@@ -1,4 +1,5 @@
-﻿@{
+﻿@model EFSRT_IV.Models.ChartViewModel;
+@{
     ViewData["Title"] = "Panel";
 }
 
@@ -27,6 +28,9 @@
                 <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Ventas
                 </a>
+                <div class="col-md-12">
+                    <canvas id="ventasChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -35,5 +39,29 @@
 @section Scripts {
     <script>
         $("#sideBar").load("/Store/SideBar")
+    </script>
+
+    <script>
+        var ventasCtx = document.getElementById('ventasChart').getContext('2d');
+        var ventasChart = new Chart(ventasCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.VentasLabels)),
+                datasets: [{
+                    label: 'Ventas de los últimos 30 días',
+                    data: @Html.Raw(Json.Serialize(Model.VentasData)),
+                    fill: false,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     </script>
 }
