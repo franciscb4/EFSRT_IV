@@ -29,7 +29,6 @@ namespace EFSRT_IV.Models
         [StringLength(9, ErrorMessage = "Máximo 9 digitos.")]
         [Range(900000000, 999999999, ErrorMessage = "El campo debe ser un múmero válido")]
         public string phone { get; set; }
-        
         public bool state { get; set; }
 
 

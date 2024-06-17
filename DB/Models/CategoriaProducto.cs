@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DB.Models;
 
-public partial class Categorium
+public partial class CategoriaProducto
 {
-    public int IdCategoria { get; set; }
+    public int IdCategoriaProducto { get; set; }
 
     public string Nombre { get; set; } = null!;
 

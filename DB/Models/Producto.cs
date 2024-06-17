@@ -15,13 +15,15 @@ public partial class Producto
 
     public bool Estado { get; set; }
 
-    public int IdCategoria { get; set; }
+    public int IdCategoriaProducto { get; set; }
 
     public int IdTienda { get; set; }
 
+    public virtual ICollection<DetalleGasto> DetalleGastos { get; set; } = new List<DetalleGasto>();
+
     public virtual ICollection<DetalleVentum> DetalleVenta { get; set; } = new List<DetalleVentum>();
 
-    public virtual Categorium IdCategoriaNavigation { get; set; } = null!;
+    public virtual CategoriaProducto IdCategoriaProductoNavigation { get; set; } = null!;
 
     public virtual Tiendum IdTiendaNavigation { get; set; } = null!;
 }

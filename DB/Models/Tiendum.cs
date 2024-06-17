@@ -11,6 +11,8 @@ public partial class Tiendum
 
     public int IdUsuario { get; set; }
 
+    public virtual ICollection<Gasto> Gastos { get; set; } = new List<Gasto>();
+
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();

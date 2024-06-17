@@ -4,6 +4,7 @@ using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace EFSRT_IV.Controllers
 {
@@ -32,10 +33,12 @@ namespace EFSRT_IV.Controllers
 
         public IActionResult CreateProduct()
         {
-            //OBTENER CATEGORIAS Y PASARLAS AL VIEWBAG
-            var categorias = _context.Categoria.ToList();
-            ViewBag.categorias = new SelectList(categorias, "IdCategoria", "Nombre");
-            return View(new Product());
+                //OBTENER CATEGORIAS Y PASARLAS AL VIEWBAG
+                var categorias = _context.CategoriaProductos.ToList();
+                ViewBag.categorias = new SelectList(categorias, "IdCategoriaProducto", "Nombre");
+
+                return View(new Product());
+
         }
         [HttpPost]
         public IActionResult CreateProduct(Product product)
@@ -44,8 +47,8 @@ namespace EFSRT_IV.Controllers
             if (!ModelState.IsValid)
             {
                 //OBTENER CATEGORIAS Y PASARLAS AL VIEWBAG
-                var categorias = _context.Categoria.ToList();
-                ViewBag.categorias = new SelectList(categorias, "IdCategoria", "Nombre");
+                var categorias = _context.CategoriaProductos.ToList();
+                ViewBag.categorias = new SelectList(categorias, "IdCategoriaProducto", "Nombre");
                 return View();
             }
 
@@ -61,7 +64,7 @@ namespace EFSRT_IV.Controllers
                 Nombre = product.name,
                 Precio = Convert.ToDecimal(product.price),
                 Stock = product.stock,
-                IdCategoria = product.category,
+                IdCategoriaProducto = product.category,
                 IdTienda = storeId,
                 Estado = true
             });
@@ -83,7 +86,7 @@ namespace EFSRT_IV.Controllers
             if (found == null) return RedirectToAction("FindAllProducts");
             
             //BUSCAR CATEGORIA PARA MOSTRAR SU NOMBRE
-            var categoria = _context.Categoria.FirstOrDefault(c => c.IdCategoria == found.IdCategoria);
+            var categoria = _context.CategoriaProductos.FirstOrDefault(c => c.IdCategoriaProducto == found.IdCategoriaProducto);
             if (categoria == null) return RedirectToAction("FindAllProducts");
             ViewBag.categoria = categoria.Nombre;
             
@@ -105,8 +108,8 @@ namespace EFSRT_IV.Controllers
             if (found == null) return RedirectToAction("FindAllProducts");
 
             //BUSCAR CATEGORIA PARA MOSTRAR SU NOMBRE
-            var categorias = _context.Categoria.ToList();
-            ViewBag.categorias = new SelectList(categorias, "IdCategoria", "Nombre", found.IdCategoria);
+            var categorias = _context.CategoriaProductos.ToList();
+            ViewBag.categorias = new SelectList(categorias, "IdCategoriaProducto", "Nombre", found.IdCategoriaProducto);
 
             //PRODUCTO PARA LA VISTA
             Product product = mapperProduct(found);
@@ -119,8 +122,8 @@ namespace EFSRT_IV.Controllers
             if (!ModelState.IsValid)
             {
                 //OBTENER CATEGORIAS Y PASARLAS AL VIEWBAG
-                var categorias = _context.Categoria.ToList();
-                ViewBag.categorias = new SelectList(categorias, "IdCategoria", "Nombre", product.category);
+                var categorias = _context.CategoriaProductos.ToList();
+                ViewBag.categorias = new SelectList(categorias, "IdCategoriaProducto", "Nombre", product.category);
                 return View();
             }
 
@@ -137,7 +140,7 @@ namespace EFSRT_IV.Controllers
                 Nombre = product.name,
                 Precio = Convert.ToDecimal(product.price),
                 Stock = product.stock,
-                IdCategoria = product.category,
+                IdCategoriaProducto = product.category,
                 IdTienda = storeId,
                 Estado = product.state
             });
@@ -172,7 +175,7 @@ namespace EFSRT_IV.Controllers
                 id = p.IdProducto,
                 name = p.Nombre,
                 price = p.Precio,
-                category = p.IdCategoria,
+                category = p.IdCategoriaProducto,
                 stock = p.Stock,
                 state = p.Estado
             };
