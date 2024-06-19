@@ -83,6 +83,7 @@ namespace EFSRT_IV.Controllers
                 Telefono = user.phone,
                 Clave = user.password
             });
+            _context.SaveChanges();
             return View();
         }
 

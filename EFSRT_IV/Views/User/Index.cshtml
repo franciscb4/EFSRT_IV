@@ -18,11 +18,11 @@
     {
         <div class="rounded-3 col-4 bg-dark-subtle" style="width: 330px">
             <a asp-action="Panel" asp-route-store="@item.IdTienda" asp-controller="Store"
-                class="w-100 h-100 py-4 text-decoration-none link-dark d-flex justify-content-evenly align-items-center">
+                class="w-100 h-100 py-4 text-decoration-none link-dark gap-4 d-flex justify-content-evenly align-items-center">
                 <img src="~/images/store/store.png" alt="..." style="width: 100px; height: 100px; filter: invert(10%)" />
 
                 <span class="h4">
-                    @item.Nombre
+                    @item.RazonSocial
                 </span>
             </a>
         </div>

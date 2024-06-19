@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EFSRT_IV.Models.SellDetail>
+﻿@model EFSRT_IV.Models.Sell;
 
 @{
     ViewData["Title"] = "FindSell";
@@ -15,8 +15,8 @@
 <hr />
 
 <div class="w-100">
-    <p class="h5">Total: S/@ViewBag.total</p>
-    <p class="h5">Fecha: @ViewBag.date</p>
+    <p class="h5">Total: S/@Model.total</p>
+    <p class="h5">Fecha: @Model.date.ToShortDateString()</p>
 
     <div class="mt-3 border border-4 rounded" style="width: 40%; max-height: 50vh; overflow-scroll">
         <table class="table table-striped mb-0">
@@ -37,7 +37,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model) {
+            @foreach (var item in Model.details) {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.product)

@@ -7,7 +7,11 @@ public partial class Tiendum
 {
     public int IdTienda { get; set; }
 
-    public string Nombre { get; set; } = null!;
+    public string RazonSocial { get; set; } = null!;
+
+    public string Ruc { get; set; } = null!;
+
+    public bool Estado { get; set; }
 
     public int IdUsuario { get; set; }
 

@@ -27,13 +27,28 @@ namespace EFSRT_IV.Controllers
             ViewBag.storeName = storeName;
             return PartialView("_SideBar");
         }
-        public IActionResult Panel(int store)
+        public IActionResult Panel(int? store)
         {
-            var found = _context.Tienda.FirstOrDefault(t => t.IdTienda == store);
+            //OBTENER ID DE LA TIENDA ACTUAL
+            string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
+            //if (sessionStoreId.IsNullOrEmpty())
+            //    return RedirectToAction("Index", "User");
+
+            //OBTENER Y VALIDAR ID DEL USUARIO ACTUAL
+            string sessionUserId = getFromSession(Constants.SESSION_USER_ID_KEY);
+            if (sessionUserId.IsNullOrEmpty())
+                return RedirectToAction("Login");
+            int userId = Convert.ToInt32(sessionUserId);
+
+            //ASIGNAR VALOR ENTERO AL ID DE TIENDA ACTUAL
+            int storeId = store == null ? Convert.ToInt32(sessionStoreId) : (int)store;
+
+            //BUSCAR TIENDA EN LA BD
+            var found = _context.Tienda.FirstOrDefault(t => t.IdTienda == storeId && t.IdUsuario == userId);
             if (found == null)
                 return RedirectToAction("Index", "User");
 
-            setStoreInSession(found.IdTienda.ToString(), found.Nombre);
+            setStoreInSession(found.IdTienda.ToString(), found.RazonSocial);
 
             var endDate = DateTime.Now;
             var startDate = endDate.AddDays(-30);
@@ -76,9 +91,9 @@ namespace EFSRT_IV.Controllers
             _context.Tienda.Add(new Tiendum()
             {
                 IdUsuario = userId,
-                //ruc
-                Nombre = store.businessName, //razon social
-                //state
+                Ruc = store.ruc,
+                RazonSocial = store.businessName,
+                Estado = true
             });
             _context.SaveChanges();
             return RedirectToAction();
@@ -106,10 +121,10 @@ namespace EFSRT_IV.Controllers
         }
 
         private string getFromSession(string key) => HttpContext.Session.GetString(key);
-        private void setStoreInSession(string id, string name)
+        private void setStoreInSession(string id, string bussinessName)
         {
             HttpContext.Session.SetString(Constants.SESSION_STORE_ID_KEY, id);
-            HttpContext.Session.SetString(Constants.SESSION_STORE_NAME_KEY, name);
+            HttpContext.Session.SetString(Constants.SESSION_STORE_NAME_KEY, bussinessName);
         }
 
     }

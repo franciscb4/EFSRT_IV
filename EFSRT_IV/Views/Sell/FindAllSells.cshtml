@@ -31,13 +31,12 @@
                 <tr>
                     <td>
                         @nro
-                        @* @Html.DisplayFor(modelItem => item.id) *@
                     </td>
                     <td>
                         S/@Html.DisplayFor(modelItem => item.total)
                     </td>
                     <td>
-                        @Convert.ToDateTime(item.date).ToString("dd/MM/yyyy")
+                        @item.date.ToShortDateString()
                     </td>
                     <td>
                         @Html.ActionLink("Ver", "FindSell", new { id = item.id })
