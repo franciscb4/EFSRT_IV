@@ -1,4 +1,5 @@
-﻿using DB.Models;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using DB.Models;
 using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,11 @@ namespace EFSRT_IV.Controllers
     {
 
         private readonly EfsrtIvContext _context;
-        public SellController(EfsrtIvContext context)
+        private readonly INotyfService _notfy;
+        public SellController(EfsrtIvContext context, INotyfService notyf)
         {
             _context = context;
+            _notfy = notyf;
         }
 
         public IActionResult FindAllSells()
@@ -74,45 +77,85 @@ namespace EFSRT_IV.Controllers
             //OBTENER NOMBRES DE LOS PRODUCTOS DE LA BD
             var productos = _context.Productos.Where(p => p.IdTienda == storeId);
             List<string> names =  productos.Select(p => p.Nombre).ToList();
-            List<SellItem> list = new List<SellItem>();
-            return View(list);
+            ViewBag.names = names;
+
+            //OBTENER LA LISTA DE ITEMS DE LA SESION Y VALIDAR
+            string sessionSell = getFromSession(Constants.SESSION_SELL_LIST_KEY);
+            List<SellItem> sellList = sessionSell.IsNullOrEmpty()
+                    ? new List<SellItem>()
+                    : JsonConvert.DeserializeObject<List<SellItem>>(sessionSell)!;// -!
+
+            //OBTENER EL ANTIGUO MONTO TOTAL
+            string sessionSellAmount = getFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
+            decimal amount = sessionSellAmount.IsNullOrEmpty()
+                    ? 0
+                    : Convert.ToDecimal(sessionSellAmount);
+            ViewBag.total = amount;
+
+            return View(sellList);
         }
         [HttpPost]
-        public IActionResult AddItemToSell([FromBody] SellItem sellItem)
+        public IActionResult AddItemToSell(SellItem sellItem)
         {
             //VALIDAR EL MODEL STATE
             if (!ModelState.IsValid)
                 return RedirectToAction("CreateSell");
+            
+            //OBTENER DATOS DEL PRODUCTO SELECCIONADO DESDE LA BD
+            var product = _context.Productos.FirstOrDefault(p => p.Nombre.Contains(sellItem.productName));
+            if (product == null)
+                return RedirectToAction("CreateSell");
+            sellItem.productId = product.IdProducto;
+            sellItem.productPrice = product.Precio;
+            sellItem.max = product.Stock;
+
+            if (sellItem.quantity > sellItem.max)
+            {
+                _notfy.Error("La cantidad excede el máximo permitido.");
+                return RedirectToAction("CreateSell");
+            }
 
             //OBTENER LA LISTA DE ITEMS DE LA SESION Y VALIDAR
             string sessionSell = getFromSession(Constants.SESSION_SELL_LIST_KEY);
-            if (sessionSell.IsNullOrEmpty())
-                return RedirectToAction("CreateSell");
-            List<SellItem> sellList = JsonConvert.DeserializeObject<List<SellItem>>(sessionSell)!;// -!
+            List<SellItem> sellList = sessionSell.IsNullOrEmpty()
+                    ? new List<SellItem>()
+                    : JsonConvert.DeserializeObject<List<SellItem>>(sessionSell)!;// -!
 
-            //VERIFICAR QUE EL ITEM NO EXISTA EN LA LISTA
+            //VERIFICAR SI EL ITEM EXISTA EN LA LISTA Y ACTUALIZARLO
             if (sellList.Any(si => si.productId == sellItem.productId))
-                return RedirectToAction("CreateSell");
+            {
+                int index = sellList.FindIndex(si => si.productId == sellItem.productId);
+                int newQuantity = sellList[index].quantity += sellItem.quantity;
+                if (newQuantity > sellItem.max)
+                {
+                    _notfy.Error("La cantidad excede el máximo permitido.");
+                    return RedirectToAction("CreateSell");
+                }
+                sellList[index].quantity = newQuantity;
+            }
+            else 
+                sellList.Add(sellItem);
 
-            //AGREGAR EL ITEM EN LA LISTA Y GUARDAR EN LA SESSION
-            sellList.Add(sellItem);
             string stringifiedList = JsonConvert.SerializeObject(sellList);
             setInSession(Constants.SESSION_SELL_LIST_KEY, stringifiedList);
 
-            //OBTENER EL ANTIGUO MONTO TOTAL
+            //OBTENER EL ANTIGUO MONTO TOTAL Y ACTUALIZARLO
             string sessionSellAmount = getFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
-            if (sessionSellAmount.IsNullOrEmpty())
-                return RedirectToAction("CreateSell");
-            decimal oldAmount = Convert.ToDecimal(sessionSellAmount);
+            decimal amount = sessionSellAmount.IsNullOrEmpty()
+                    ? 0
+                    : Convert.ToDecimal(sessionSellAmount);
+            amount += sellItem.quantity * sellItem.productPrice;
 
-            //ACTUALIZAR EL MONTO TOTAL Y GUARDAR EN LA SESSION
-            var product = _context.Productos.FirstOrDefault(p => p.IdProducto == sellItem.productId);
-            if (product == null)
-                return RedirectToAction("CreateSell");
-            oldAmount += product.Precio;
-            setInSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY, oldAmount.ToString());
+            //GUARDAR LA LISTA Y EL MONTO EN LA SESSION
+            setInSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY, amount.ToString());
 
             return RedirectToAction("CreateSell");
+        }
+        public IActionResult CancelSell()
+        {
+            removeFromSession(Constants.SESSION_SELL_LIST_KEY);
+            removeFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
+            return RedirectToAction("FindAllSells");
         }
         public IActionResult ChangeQuantity(int productId, bool increase)
         {
@@ -126,9 +169,17 @@ namespace EFSRT_IV.Controllers
             if (index == -1)
                 return RedirectToAction("CreateSell");
 
+            //VALIDR LIMITES DE CANTIDAD
+            SellItem indexed = sellList[index];
+            if (indexed.quantity == 1 && !increase)
+                return RedirectToAction("CreateSell");
+            else if (indexed.quantity == indexed.max)
+                return RedirectToAction("CreateSell");
+
+            //ACTUALIZAR CANTIDAD DEL ITEM
             sellList[index].quantity = increase
-                ? sellList[index].quantity + 1
-                : sellList[index].quantity - 1;
+                ? indexed.quantity + 1
+                : indexed.quantity - 1;
 
             //OBTENER EL ANTIGUO MONTO TOTAL
             string sessionSellAmount = getFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
@@ -136,23 +187,18 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("CreateSell");
             decimal oldAmount = Convert.ToDecimal(sessionSellAmount);
 
-            //OBTENER EL PRECIO DEL PRODUCTO EN CUESTION
-            var producto = _context.Productos.FirstOrDefault(p => p.IdProducto == productId);
-            if (producto != null)
-                return RedirectToAction("CreateSell");
-            decimal price = producto.Precio;
-
             //ACTUALIZAR EL MONTO TOTAL Y GUARDAR EN LA SESION
             oldAmount = increase
-                ? oldAmount + price
-                : oldAmount - price;
+                ? oldAmount + indexed.productPrice
+                : oldAmount - indexed.productPrice;
 
+            string stringifiedList = JsonConvert.SerializeObject(sellList);
+            setInSession(Constants.SESSION_SELL_LIST_KEY, stringifiedList);
             setInSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY, oldAmount.ToString());
             return RedirectToAction("CreateSell");
         }
 
-        [HttpPost]
-        public IActionResult CreateSell(int JA)
+        public IActionResult DeleteItemFromSell(int productId)
         {
             //OBTENER LA LISTA DE ITEMS DE LA SESION Y VALIDAR
             string sessionSell = getFromSession(Constants.SESSION_SELL_LIST_KEY);
@@ -160,10 +206,39 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("CreateSell");
             List<SellItem> sellList = JsonConvert.DeserializeObject<List<SellItem>>(sessionSell)!;// -!
 
-            //OBTENER LOS PRODUCTOS QUE HAYAN SIDO AGREGADOS DE LA BD
-            var productsList = _context.Productos
-                                .Where(p => sellList.Any(si => si.productId == p.IdProducto))
-                                .ToList();
+            //VERIFICAR QUE EL ITEM EXISTA EN LA LISTA
+            SellItem found = sellList.FirstOrDefault(si => si.productId == productId);
+            if (found == null)
+            {
+                _notfy.Error("Error buscando el producto.");
+                return RedirectToAction("CreateSell");
+            }
+
+            //OBTENER EL ANTIGUO MONTO TOTAL
+            string sessionSellAmount = getFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
+            if (sessionSellAmount.IsNullOrEmpty())
+                return RedirectToAction("CreateSell");
+            decimal oldAmount = Convert.ToDecimal(sessionSellAmount);
+
+            //ACTUALIZAR OBJETOS Y GUARDAR EN LA SESION
+            oldAmount -= (found.quantity * found.productPrice);
+            sellList.Remove(found);
+
+            string stringifiedList = JsonConvert.SerializeObject(sellList);
+            setInSession(Constants.SESSION_SELL_LIST_KEY, stringifiedList);
+            setInSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY, oldAmount.ToString());
+
+            _notfy.Success("Producto eliminado");
+            return RedirectToAction("CreateSell");
+        }
+
+        public IActionResult MakeSell()
+        {
+            //OBTENER LA LISTA DE ITEMS DE LA SESION Y VALIDAR
+            string sessionSell = getFromSession(Constants.SESSION_SELL_LIST_KEY);
+            if (sessionSell.IsNullOrEmpty())
+                return RedirectToAction("CreateSell");
+            List<SellItem> sellList = JsonConvert.DeserializeObject<List<SellItem>>(sessionSell)!;// -!
 
             //OBTENER Y VALIDAR ID DE LA TIENDA ACTUAL
             string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
@@ -184,16 +259,13 @@ namespace EFSRT_IV.Controllers
             if (sessionSellAmount.IsNullOrEmpty())
                 return RedirectToAction("CreateSell");
             decimal amount = Convert.ToDecimal(sessionSellAmount);
+            ventum.Monto = amount;
 
             //CALCULAR LOS DATOS PARA LA LISTA DE DETALLES
             foreach (var si in sellList)
             {
-                Producto producto = productsList.FirstOrDefault(p => p.IdProducto == si.productId);
-                if (producto == null)
-                    throw new Exception();
-
                 int quantity = si.quantity;
-                decimal subtotal = Math.Truncate(100 * (producto.Precio * quantity)) / 100;//TR
+                decimal subtotal = si.productPrice * quantity;
                 DetalleVentum detalleVentum = new DetalleVentum()
                 {
                     IdProducto = si.productId,
@@ -201,14 +273,16 @@ namespace EFSRT_IV.Controllers
                     Subtotal = subtotal
                 };
                 ventum.DetalleVenta.Add(detalleVentum);
-                ventum.Monto = amount;
             }
             
             //GUARDAR VENTA EN LA BD
             _context.Venta.Add(ventum);
             _context.SaveChanges();
+            removeFromSession(Constants.SESSION_SELL_LIST_KEY);
+            removeFromSession(Constants.SESSION_SELL_LIST_AMOUNT_KEY);
+            _notfy.Success("Venta registrada");
 
-            return View();
+            return RedirectToAction("FindAllSells");
         }
 
 
@@ -237,6 +311,7 @@ namespace EFSRT_IV.Controllers
         }
 
         private string getFromSession(string key) => HttpContext.Session.GetString(key);
+        private void removeFromSession(string key) => HttpContext.Session.Remove(key);
         private void setInSession(string key, string value) => HttpContext.Session.SetString(key, value);
         //private void setSellListOnSession(string list) => HttpContext.Session.SetString(Constants.SESSION_SELL_LIST_KEY, list);
     }

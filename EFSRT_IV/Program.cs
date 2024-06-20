@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification;
 using DB.Models;
 using Microsoft.EntityFrameworkCore;
 using static System.Formats.Asn1.AsnWriter;
@@ -11,6 +12,15 @@ builder.Services.AddDbContext<EfsrtIvContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("sql"));
 });
 
+//ADDING TOAST NOTIFICATIONS
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 5;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.BottomRight;
+});
+
+//ADDING SESSION
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

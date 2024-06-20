@@ -1,0 +1,123 @@
+﻿@model IEnumerable<EFSRT_IV.Models.SellItem>
+
+@{
+    ViewData["Title"] = "AllSellItems";
+}
+
+<div class="d-flex justify-content-start align-items-center gap-3">
+    <a asp-action="CancelSell" class="d-flex justify-content-center align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+        </svg>
+    </a>
+    <h1>Nueva venta</h1>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-4">
+        <form action="AddItemToSell" controller="Sell" method="post">
+
+            <div class="form-group my-2">
+                <label class="form-label">Producto:</label>
+                <input type="search" name="productName" class="form-control" list="names" id="input-datalist">
+                <datalist id="names">
+                    @foreach(var name in ViewBag.names)
+                    {
+                        <option>@name</option>
+                    }
+                </datalist>
+            </div>
+
+            <div class="form-group my-2 mb-3">
+                <label class="form-label">Cantidad:</label>
+                <input id="quantity" name="quantity" type="number" min="1" max="2147483647" class="form-control" />
+                @* <span asp-validation-for="businessName" class="text-danger"></span> *@
+            </div>
+
+            <div class="form-group d-flex justify-content-start align-items-center gap-3">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+
+            </div>
+        </form>
+    </div>
+</div>
+    
+<hr />
+
+<h2 class="h3">Resumen</h2>
+<p>
+    @(Model.Count()) productos agregados
+</p>
+@if (Model.Count() > 0)
+{
+    <div class="border border-4 rounded" style="width: 45%; max-height: 40vh; overflow-y: scroll">
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr class="h6">
+                    <th>
+                        Producto
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
+                    <th>
+                        Subtotal
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="h6">
+                @foreach (var item in Model) {
+                    <tr>
+                        <td class="col-6">
+                            @Html.DisplayFor(modelItem => item.productName)
+                        </td>
+                        <td class="col-3">
+                            <div class="d-flex justify-content-start align-items-center gap-2">
+                                <a asp-action="ChangeQuantity" asp-route-productId="@item.productId" asp-route-increase="true"
+                                    class="btn-dark rounded-circle d-flex justify-content-center align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
+                                </a>
+                                @Html.DisplayFor(modelItem => item.quantity)
+                                <a asp-action="ChangeQuantity" asp-route-productId="@item.productId" asp-route-increase="false"
+                                    class="btn-dark rounded-circle d-flex justify-content-center align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="2">
+                            S/@(item.productPrice * item.quantity)
+                        </td>
+                        <td class="col-1 text-center">
+                            <a asp-action="DeleteItemFromSell" asp-route-productId="@item.productId"
+                               class="btn btn-close bg-light">
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold h5">
+                    <td colspan="3">Total</td>
+                    <td>S/@ViewBag.total</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="my-3 d-flex justify-content-start gap-3">
+        <a asp-action="MakeSell" class="btn btn-primary">
+            Realizar venta
+        </a>
+        <a asp-action="CancelSell" class="btn btn-secondary">
+            Cancelar
+        </a>
+    </div>
+}

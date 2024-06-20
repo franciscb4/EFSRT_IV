@@ -89,8 +89,7 @@ namespace EFSRT_IV.Controllers
 
         public IActionResult LogOut()
         {
-            HttpContext.Session.Remove(Constants.SESSION_USER_ID_KEY);
-            HttpContext.Session.Remove(Constants.SESSION_USER_NAME_KEY);
+            HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
 

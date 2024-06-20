@@ -1,4 +1,5 @@
-﻿using DB.Models;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using DB.Models;
 using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace EFSRT_IV.Controllers
     public class ProductsController : Controller
     {
         private readonly EfsrtIvContext _context;
-        public ProductsController(EfsrtIvContext context) 
+        private readonly INotyfService _notfy;
+        public ProductsController(EfsrtIvContext context, INotyfService notyf) 
         {
             _context = context;
+            _notfy = notyf;
         }
 
         public IActionResult FindAllProducts()
@@ -69,7 +72,7 @@ namespace EFSRT_IV.Controllers
                 Estado = true
             });
             _context.SaveChanges();
-
+            _notfy.Success("Producto registrado.");
             return RedirectToAction("FindAllProducts");
         }
 
@@ -145,6 +148,8 @@ namespace EFSRT_IV.Controllers
                 Estado = product.state
             });
             _context.SaveChanges();
+            _notfy.Success("Producto actualizado.");
+
             return RedirectToAction("Find", new { id = product.id });
         }
         public IActionResult ChangeStateProduct(int id, bool state)
