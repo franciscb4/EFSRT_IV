@@ -54,7 +54,7 @@ namespace EFSRT_IV.Controllers
             var startDate = endDate.AddDays(-30);
 
             var ventas = _context.Venta
-                .Where(v => v.Fecha >= startDate && v.Fecha <= endDate)
+                .Where(v => v.Fecha >= startDate && v.Fecha <= endDate && v.IdTienda == storeId)
                 .GroupBy(v => v.Fecha.Date)
                 .Select(g => new { Fecha = g.Key, Total = g.Sum(v => v.Monto) })
                 .ToList();
@@ -62,8 +62,31 @@ namespace EFSRT_IV.Controllers
             var ventasLabels = ventas.Select(v => v.Fecha.ToString("dd MMM")).ToList();
             var ventasData = ventas.Select(v => v.Total).ToList();
 
+            var gastos = _context.Gastos
+                .Where(g => g.Fecha >= startDate && g.Fecha <= endDate && g.IdTienda == storeId)
+                .GroupBy(g => g.IdCategoriaGastoNavigation.Nombre)
+                .Select(g => new { Categoria = g.Key, Total = g.Sum(g => g.Monto) })
+                .ToList();
+
+            var gastosLabels = gastos.Select(g => g.Categoria).ToList();
+            var gastosData = gastos.Select(g => g.Total).ToList();
+
+            var ingresos = ventas.GroupJoin(
+                _context.Gastos.Where(g => g.Fecha >= startDate && g.Fecha <= endDate && g.IdTienda == storeId),
+                v => v.Fecha,
+                g => g.Fecha.Date,
+                (v, g) => new { v.Fecha, Ingreso = v.Total - g.Sum(x => x.Monto) })
+                .ToList();
+
+            var ingresosLabels = ingresos.Select(i => i.Fecha.ToString("dd MMM")).ToList();
+            var ingresosData = ingresos.Select(i => i.Ingreso).ToList();
+
             var model = new ChartViewModel
             {
+                IngresosLabels = ingresosLabels,
+                IngresosData = ingresosData,
+                GastosLabels = gastosLabels,
+                GastosData = gastosData,
                 VentasLabels = ventasLabels,
                 VentasData = ventasData
             };

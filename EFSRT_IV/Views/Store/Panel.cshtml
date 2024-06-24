@@ -16,20 +16,26 @@
                 <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Ingresos
                 </a>
+                <div class="col-md-12">
+                    <canvas id="ingresosChart"></canvas>
+                </div>
             </div>
             <div class="mx-auto h-50 border border-4 bg-light" style="width:90%">
-                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
-                    Informes
-                </a>
-            </div>
-        </div>
-        <div class="w-50 h-100">
-            <div class="d-block h-100 border border-4 bg-light" style="width: 95%">
                 <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
                     Ventas
                 </a>
                 <div class="col-md-12">
                     <canvas id="ventasChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="w-50 h-100">
+            <div class="d-block h-100 border border-4 bg-light" style="width: 95%">
+                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
+                    Gastos
+                </a>
+                <div class="col-md-12">
+                    <canvas id="gastosChart"></canvas>
                 </div>
             </div>
         </div>
@@ -42,14 +48,94 @@
     </script>
 
     <script>
+        function formatCurrency(value) {
+            return `S/ ${value.toFixed(2)}`;
+        }
+
+        var ingresosData = @Html.Raw(Json.Serialize(Model.IngresosData));
+        var formattedIngresosData = ingresosData.map(value => formatCurrency(value));
+
+        var gastosData = @Html.Raw(Json.Serialize(Model.GastosData));
+        var formattedGastosData = gastosData.map(value => formatCurrency(value));
+
+        var ventasData = @Html.Raw(Json.Serialize(Model.VentasData));
+        var formattedVentasData = ventasData.map(value => formatCurrency(value));
+
+        var ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
+        var ingresosChart = new Chart(ingresosCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.IngresosLabels)),
+                datasets: [{
+                    label: 'Ingresos',
+                    data: ingresosData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return formatCurrency(tooltipItem.yLabel);
+                        }
+                    }
+                }
+            }
+        });
+
+        var gastosCtx = document.getElementById('gastosChart').getContext('2d');
+        var gastosChart = new Chart(gastosCtx, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.GastosLabels)),
+                datasets: [{
+                    data: gastosData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            var dataset = data.datasets[tooltipItem.datasetIndex];
+                            var value = dataset.data[tooltipItem.index];
+                            return formatCurrency(value);
+                        }
+                    }
+                }
+            }
+        });
+
         var ventasCtx = document.getElementById('ventasChart').getContext('2d');
         var ventasChart = new Chart(ventasCtx, {
             type: 'line',
             data: {
                 labels: @Html.Raw(Json.Serialize(Model.VentasLabels)),
                 datasets: [{
-                    label: 'Ventas de los últimos 30 días',
-                    data: @Html.Raw(Json.Serialize(Model.VentasData)),
+                    label: 'Ventas',
+                    data: ventasData,
                     fill: false,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     tension: 0.1
@@ -58,7 +144,19 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return formatCurrency(tooltipItem.yLabel);
+                        }
                     }
                 }
             }
