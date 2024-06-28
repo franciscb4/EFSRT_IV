@@ -8,50 +8,77 @@
 <hr />
 
 <div class="mb-4">
-    <a asp-action="CreateProduct" class="btn btn-primary">Registrar producto</a>
+    <a asp-action="CreateProduct" class="btn btn-primary @(ViewBag.storeState ? "" : "disabled")">Registrar producto</a>
 </div>
 
 <div class="w-100">
-    <ul class="w-100 d-flex flex-wrap justify-content-center gap-4" style="max-height: 60vh; overflow-y: scroll">
-    @foreach (var item in Model)
-    {
-        <li class="" style="width: 18rem; height: 130px; list-style: none">
-            <div class="card w-100 h-100">
-                <div class="card-body d-flex flex-column justify-content-between">
-                    <a class="card-title text-decoration-none h5" asp-action="Find" asp-route-id="@item.id" asp-controller="Products">
-                        @item.name
+
+    <div class="w-100 my-3 row ps-0 align-items-start">
+        <form asp-action="FilterProducts" class="col-8">
+            <div class="row ms-0">
+                <label class="form-label col-3">
+                    Buscar producto:
+                </label>
+                <div class="col-6">
+                    <input name="filter" type="search" class="form-control search" />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-secondary">
+                        Buscar
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <a asp-action="FindAllProducts" class="btn btn-danger">
+                        Limpiar
                     </a>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="card-text fw-bold mb-0 text-success">S/@item.price</p>
-                        <div>
-                            @if (item.stock < 5)
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
-                                </svg>
-                            }
-                            else if (item.state)
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                                </svg>
-                            }
-                            else
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
-                                </svg>
-                            }
-                        </div>
-                    </div>
                 </div>
             </div>
-        </li>
-    }
-    </ul>
+        </form>
+
+    </div>
+
+    <div class="w-100" style="max-height: 60vh; overflow-y: scroll">
+        <ul class="mx-auto row ps-0 justify-content-start gap-3">
+            @foreach (var item in Model)
+            {
+                <li class="" style="min-width: 240px; max-width: 250px; height: 130px; list-style: none">
+                    <div class="card w-100 h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <a class="card-title text-decoration-none h5" asp-action="Find" asp-route-id="@item.id" asp-controller="Products">
+                                @item.name
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="card-text fw-bold mb-0 text-success">S/@item.price</p>
+                                <div>
+                                    @if (item.stock < 5)
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+                                        </svg>
+                                    }
+                                    else if (item.state)
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                            <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                        </svg>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 </div>
 
 <div id="sideBar">

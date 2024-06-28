@@ -9,37 +9,38 @@
 <h1>Resumen General</h1>
 <hr />
 
+@* CLONADO *@
 <div class="w-100">
-    <div class="mx-auto py-4 row" style="width: 85%; height: 600px">
-        <div class="w-50 d-flex flex-column justify-content-evenly gap-4">
-            <div class="mx-auto h-50 border border-4 bg-light" style="width:90%">
-                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
-                    Ingresos
-                </a>
-                <div class="col-md-12">
-                    <canvas id="ingresosChart"></canvas>
-                </div>
-            </div>
-            <div class="mx-auto h-50 border border-4 bg-light" style="width:90%">
-                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
-                    Ventas
-                </a>
-                <div class="col-md-12">
-                    <canvas id="ventasChart"></canvas>
-                </div>
+
+    <div class="mx-auto row justify-content-center gap-3" style="width: 90%;">
+
+        <div class="border p-3 border-4 bg-light col-lg-9 col-xl-5">
+            <span class="d-inline-block p-2 text-center h4">
+                Ingresos
+            </span>
+            <div class="d-flex justify-content-center mx-auto">
+                <canvas id="ingresosChart"></canvas>
             </div>
         </div>
-        <div class="w-50 h-100">
-            <div class="d-block h-100 border border-4 bg-light" style="width: 95%">
-                <a class="p-5 text-center h5" asp-action="" asp-route-store="" asp-controller="">
-                    Gastos
-                </a>
-                <div class="col-md-12">
-                    <canvas id="gastosChart"></canvas>
-                </div>
+        <div class="border p-3 border-4 bg-light col-lg-9 col-xl-5">
+            <span class="d-inline-block p-2 text-center h4">
+                Ventas
+            </span>
+            <div class="d-flex justify-content-center mx-auto">
+                <canvas id="ventasChart"></canvas>
             </div>
         </div>
+        <div class="border p-3 border-4 bg-light col-lg-9 col-xl-8">
+            <span class="d-inline-block p-2 text-center h4">
+                Gastos
+            </span>
+            <div class="d-flex justify-content-center mx-auto">
+                <canvas id="gastosChart" style="max-width: 400px; max-height: 320px;"></canvas>
+            </div>
+        </div>
+
     </div>
+
 </div>
 
 @section Scripts {

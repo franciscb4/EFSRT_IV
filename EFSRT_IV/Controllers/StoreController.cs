@@ -18,6 +18,7 @@ namespace EFSRT_IV.Controllers
             //NO VALIDA POR QUE NO SE COMO MANEJAR PARTIAL VIEW
             string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
             string storeName = getFromSession(Constants.SESSION_STORE_NAME_KEY);
+            string storeState = getFromSession(Constants.SESSION_STORE_STATE_KEY);
 
             //if (sessionStoreId.IsNullOrEmpty() || storeName.IsNullOrEmpty())
             //    return RedirectToAction("Index", "User");
@@ -25,14 +26,13 @@ namespace EFSRT_IV.Controllers
 
             ViewBag.storeId = storeId;
             ViewBag.storeName = storeName;
+            ViewBag.storeState = Convert.ToBoolean(storeState);
             return PartialView("_SideBar");
         }
         public IActionResult Panel(int? store)
         {
-            //OBTENER ID DE LA TIENDA ACTUAL
+            //OBTENER ID DE LA TIENDA ACTUAL 
             string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
-            //if (sessionStoreId.IsNullOrEmpty())
-            //    return RedirectToAction("Index", "User");
 
             //OBTENER Y VALIDAR ID DEL USUARIO ACTUAL
             string sessionUserId = getFromSession(Constants.SESSION_USER_ID_KEY);
@@ -48,7 +48,7 @@ namespace EFSRT_IV.Controllers
             if (found == null)
                 return RedirectToAction("Index", "User");
 
-            setStoreInSession(found.IdTienda.ToString(), found.RazonSocial);
+            setStoreInSession(found.IdTienda.ToString(), found.RazonSocial, found.Estado.ToString());
 
             var endDate = DateTime.Now;
             var startDate = endDate.AddDays(-30);
@@ -136,18 +136,19 @@ namespace EFSRT_IV.Controllers
                 return RedirectToAction("Index", "User");
 
             //CAMBIAR ESTADO DE LA TIENDA EN LA BD
-            //found.Estado = state;
-            //_context.Tienda.Update(found);
-            //_context.SaveChanges();
+            found.Estado = state;
+            _context.SaveChanges();
 
+            //_context.Tienda.Update(found);
             return RedirectToAction("Panel", new { store = storeId });
         }
 
         private string getFromSession(string key) => HttpContext.Session.GetString(key);
-        private void setStoreInSession(string id, string bussinessName)
+        private void setStoreInSession(string id, string bussinessName, string state)
         {
             HttpContext.Session.SetString(Constants.SESSION_STORE_ID_KEY, id);
             HttpContext.Session.SetString(Constants.SESSION_STORE_NAME_KEY, bussinessName);
+            HttpContext.Session.SetString(Constants.SESSION_STORE_STATE_KEY, state);
         }
 
     }

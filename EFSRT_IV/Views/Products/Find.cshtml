@@ -53,10 +53,10 @@
 </div>
 
 <div class="d-flex justify-content-start align-items-center gap-3">
-    <a asp-action="UpdateProduct" asp-route-id="@Model.id" class="btn btn-secondary">
+    <a asp-action="UpdateProduct" asp-route-id="@Model.id" class="btn btn-secondary @(ViewBag.storeState ? "" : "disabled")">
         Editar
     </a>
-    <a asp-action="ChangeStateProduct" asp-route-id="@Model.id" asp-route-state="@(!(Model.state))" class="btn btn-secondary">
+    <a asp-action="ChangeStateProduct" asp-route-id="@Model.id" asp-route-state="@(!(Model.state))" class="btn btn-secondary @(ViewBag.storeState ? "" : "disabled")">
         @(Model.state ? "Desabilitar" : "Habilitar")
     </a>
 </div>

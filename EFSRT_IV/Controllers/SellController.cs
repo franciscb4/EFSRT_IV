@@ -38,6 +38,9 @@ namespace EFSRT_IV.Controllers
                 .Select(v => mapperSell(v))
                 .ToList();
 
+            string storeState = getFromSession(Constants.SESSION_STORE_STATE_KEY);
+            ViewBag.storeState = Convert.ToBoolean(storeState);
+
             return View(list);
         }
 
@@ -75,7 +78,7 @@ namespace EFSRT_IV.Controllers
             int storeId = Convert.ToInt32(sessionStoreId);
 
             //OBTENER NOMBRES DE LOS PRODUCTOS DE LA BD
-            var productos = _context.Productos.Where(p => p.IdTienda == storeId);
+            var productos = _context.Productos.Where(p => p.IdTienda == storeId && p.Estado == true);
             List<string> names =  productos.Select(p => p.Nombre).ToList();
             ViewBag.names = names;
 
@@ -101,17 +104,27 @@ namespace EFSRT_IV.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction("CreateSell");
             
-            //OBTENER DATOS DEL PRODUCTO SELECCIONADO DESDE LA BD
+            //OBTENER DATOS DEL PRODUCTO SELECCIONADO DESDE LA BD Y VALIDAR
             var product = _context.Productos.FirstOrDefault(p => p.Nombre.Contains(sellItem.productName));
             if (product == null)
+            {
+                _notfy.Error("Producto no encontrado.");
                 return RedirectToAction("CreateSell");
+            }
+
+            if (!product.Estado)
+            {
+                _notfy.Error("Producto no disponible actualmente.");
+                return RedirectToAction("CreateSell");
+            }
+
             sellItem.productId = product.IdProducto;
             sellItem.productPrice = product.Precio;
             sellItem.max = product.Stock;
 
             if (sellItem.quantity > sellItem.max)
             {
-                _notfy.Error("La cantidad excede el máximo permitido.");
+                _notfy.Error("La cantidad excede el máximo disponible.");
                 return RedirectToAction("CreateSell");
             }
 
@@ -167,13 +180,16 @@ namespace EFSRT_IV.Controllers
 
             int index = sellList.FindIndex(si => si.productId == productId);
             if (index == -1)
+            {
+                _notfy.Error("Producto no identificado.");
                 return RedirectToAction("CreateSell");
+            }
 
             //VALIDR LIMITES DE CANTIDAD
             SellItem indexed = sellList[index];
-            if (indexed.quantity == 1 && !increase)
+            if (indexed.quantity <= 1 && !increase)
                 return RedirectToAction("CreateSell");
-            else if (indexed.quantity == indexed.max)
+            else if (indexed.quantity >= indexed.max)
                 return RedirectToAction("CreateSell");
 
             //ACTUALIZAR CANTIDAD DEL ITEM
@@ -210,7 +226,7 @@ namespace EFSRT_IV.Controllers
             SellItem found = sellList.FirstOrDefault(si => si.productId == productId);
             if (found == null)
             {
-                _notfy.Error("Error buscando el producto.");
+                _notfy.Error("Producto no identificado.");
                 return RedirectToAction("CreateSell");
             }
 
@@ -273,6 +289,12 @@ namespace EFSRT_IV.Controllers
                     Subtotal = subtotal
                 };
                 ventum.DetalleVenta.Add(detalleVentum);
+
+                var found = _context.Productos.FirstOrDefault(p => p.IdProducto == si.productId);
+                if (found != null)
+                {
+                    found.Stock -= si.quantity;
+                }
             }
             
             //GUARDAR VENTA EN LA BD

@@ -5,6 +5,8 @@ using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace EFSRT_IV.Controllers
@@ -21,17 +23,47 @@ namespace EFSRT_IV.Controllers
 
         public IActionResult FindAllProducts()
         {
+
             //OBTENER Y VALIDAR ID DE LA TIENDA ACTUAL
             string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
             if (sessionStoreId.IsNullOrEmpty())
                 return RedirectToAction("Index", "User");
             int storeId = Convert.ToInt32(sessionStoreId);
 
-            //OBTENER PRODUCTOS Y MAPEARLOS
+            //OBTENER PRODUCTOS DE LA TIENDA Y MAPEARLOS
             var products = _context.Productos
                 .Where(p => p.IdTienda == storeId)
-                .Select(p => mapperProduct(p)).ToList();
+                .Select(p => mapperProduct(p))
+                .ToList();
+
+            var tempFilter = TempData["filter"];
+            if (tempFilter != null)
+            {
+                string filter = tempFilter.ToString()!;
+
+                var filtereds = _context.Productos
+                    .Where(p => p.IdTienda == storeId && p.Nombre.Contains(filter))
+                    .Select(p => mapperProduct(p))
+                    .ToList();
+
+                if (filtereds.IsNullOrEmpty())
+                    _notfy.Warning("No se encontraron coincidencias.");
+                else
+                    products = filtereds;
+            }
+
+            string storeState = getFromSession(Constants.SESSION_STORE_STATE_KEY);
+            ViewBag.storeState = Convert.ToBoolean(storeState);
+
             return View(products);
+        }
+
+        [HttpPost]
+        public IActionResult FilterProducts(string filter)
+        {
+
+            TempData["filter"] = filter;
+            return RedirectToAction("FindAllProducts");
         }
 
         public IActionResult CreateProduct()
@@ -92,7 +124,10 @@ namespace EFSRT_IV.Controllers
             var categoria = _context.CategoriaProductos.FirstOrDefault(c => c.IdCategoriaProducto == found.IdCategoriaProducto);
             if (categoria == null) return RedirectToAction("FindAllProducts");
             ViewBag.categoria = categoria.Nombre;
-            
+
+            string storeState = getFromSession(Constants.SESSION_STORE_STATE_KEY);
+            ViewBag.storeState = Convert.ToBoolean(storeState);
+
             //PRODUCTO PARA LA VISTA
             Product product = mapperProduct(found);
             return View(product);

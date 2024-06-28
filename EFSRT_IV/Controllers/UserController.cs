@@ -1,4 +1,5 @@
-﻿using DB.Models;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using DB.Models;
 using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,11 @@ namespace EFSRT_IV.Controllers
     public class UserController : Controller
     {
         private readonly EfsrtIvContext _context;
-        public UserController(EfsrtIvContext context)
+        private readonly INotyfService _notfy;
+        public UserController(EfsrtIvContext context, INotyfService notyf)
         {
             _context = context;
+            _notfy = notyf;
         }
 
         public IActionResult UserIconButton()
@@ -51,16 +54,17 @@ namespace EFSRT_IV.Controllers
         [HttpPost]
         public IActionResult Login(User user)
         {
+
             var found = _context.Usuarios.FirstOrDefault(u => u.Correo == user.email);
             if (found == null)
             {
-                ViewBag.userNotFound = "Correo inválido";
+                _notfy.Error("Correo inválido.");
                 return View();
             }
 
             if (found.Clave != user.password)
             {
-                ViewBag.passInvalid = "Contraseña inválida";
+                _notfy.Error("Contraseña inválida");
                 return View();
             }
 
@@ -75,6 +79,9 @@ namespace EFSRT_IV.Controllers
         [HttpPost]
         public IActionResult SignUp(User user)
         {
+            if (!ModelState.IsValid)
+                return View();
+
             _context.Usuarios.Add(new Usuario()
             {
                 Nombre = user.name,

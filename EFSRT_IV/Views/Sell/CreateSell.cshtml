@@ -20,7 +20,7 @@
 
             <div class="form-group my-2">
                 <label class="form-label">Producto:</label>
-                <input type="search" name="productName" class="form-control" list="names" id="input-datalist">
+                <input type="search" name="productName" class="form-control search" autocomplete="off" list="names" id="input-datalist">
                 <datalist id="names">
                     @foreach(var name in ViewBag.names)
                     {
@@ -32,7 +32,6 @@
             <div class="form-group my-2 mb-3">
                 <label class="form-label">Cantidad:</label>
                 <input id="quantity" name="quantity" type="number" min="1" max="2147483647" class="form-control" />
-                @* <span asp-validation-for="businessName" class="text-danger"></span> *@
             </div>
 
             <div class="form-group d-flex justify-content-start align-items-center gap-3">
@@ -120,4 +119,12 @@
             Cancelar
         </a>
     </div>
+}
+
+<div id="sideBar">
+</div>
+@section Scripts {
+    <script>
+        $("#sideBar").load("/Store/SideBar")
+    </script>
 }

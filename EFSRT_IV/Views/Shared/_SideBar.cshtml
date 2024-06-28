@@ -25,27 +25,128 @@
                         <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
                     </svg>
                 </a>
-                <p class="h2 mb-1">
+                <p class="h2">
                     @ViewBag.storeName
                 </p>
+                @if (!ViewBag.storeState)
+                {
+                    <span class="h5 text-secondary">
+                        Tienda desabilitada actualmente.
+                    </span>
+                }
             </div>
 
             <ul class="nav nav-pills d-flex flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white h5" asp-action="Panel" asp-controller="Store">Resumen</a>
+                <li class="nav-item my-2">
+                    <a class="nav-link text-white d-flex justify-content-start align-items-center gap-3"
+                        asp-action="Panel" asp-controller="Store">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                            <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
+                        </svg>
+                        <span class="h5 mb-0">
+                            Resumen
+                        </span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white h5" asp-action="FindAllProducts" asp-controller="Products">Productos</a>
+                <li class="nav-item my-2">
+                    <a class="nav-link text-white d-flex justify-content-start align-items-center gap-3"
+                        asp-action="FindAllProducts" asp-controller="Products">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-basket-fill" viewBox="0 0 16 16">
+                            <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0z" />
+                        </svg>
+                        <span class="h5 mb-0">
+                            Productos
+                        </span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white h5" asp-action="FindAllSells" asp-controller="Sell">Ventas</a>
+                <li class="nav-item my-2">
+                    <a class="nav-link text-white d-flex justify-content-start align-items-center gap-3"
+                        asp-action="FindAllSells" asp-controller="Sell">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                        </svg>
+                        <span class="h5 mb-0">
+                            Ventas
+                        </span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white h5" asp-action="GenerateReport" asp-controller="Reports">Reportes</a>
+                <li class="nav-item my-2">
+                    <a class="nav-link text-white d-flex justify-content-start align-items-center gap-3"
+                        asp-action="GenerateReport" asp-controller="Reports">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2" />
+                        </svg>
+                        <span class="h5 mb-0">
+                            Reportes
+                        </span>
+                    </a>
+                </li>
+
+                @{ bool state = ViewBag.storeState; }
+                <li class="nav-item my-2">
+                    <button type="button" class="nav-link text-white d-flex justify-content-start align-items-center gap-3"
+                    data-bs-toggle="modal" data-bs-target="#disableStore">
+
+                        @if (state)
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-door-closed-fill" viewBox="0 0 16 16">
+                                <path d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
+                                <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1" />
+                            </svg>
+                        }
+          
+                        <span class="h5 mb-0">
+                            @(state ? "Deshabilitar" : "Habilitar")
+                        </span>
+                       
+@*                         @if (state)
+                        {
+                            <span class="h5 mb-0">
+                                Deshabilitar
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="h5 mb-0">
+                                Habilitar
+                            </span>
+                        } *@
+                    </button>
                 </li>
             </ul>
-        </div>
 
+        </div>
     </div>
 
+</div>
+
+
+<div class="modal fade" id="disableStore" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="h4">¿Estás seguro de @(state ? "deshabilitar" : "habilitar") la tienda?</span>
+            </div>
+            <div class="modal-body p-4">
+                <p class="h6">
+                    @(state
+                        ? "No se perderán registros, y aún tendrás acceso a toda la información. Las funciones de dar mantenimento a los productos y de registrar nuevas ventas estarán desabilitadas."
+                        : "No se perderán registros. Las funciones de dar mantenimento a los productos y de registrar nuevas ventas se volverán a habilitar.")
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="ChangeStateStore" asp-route-state="@(!ViewBag.storeState)" asp-controller="Store" class="btn btn-@(state ? "danger" : "primary")">
+                    Confirmar
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

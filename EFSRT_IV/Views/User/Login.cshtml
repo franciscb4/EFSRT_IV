@@ -27,17 +27,6 @@
                     <input type="submit" value="Ingresar" class="btn btn-primary" />
                 </div>
 
-                @if (ViewBag.userNotFound != null || ViewBag.passInvalid != null)
-                {
-                    <div class="text-danger h4">
-                        <span class="p-2 my-2">
-                            @(ViewBag.userNotFound)
-                        </span>
-                        <span class="p-2 my-2">
-                            @(ViewBag.passInvalid)
-                        </span>
-                    </div>
-                }
             </form>
         </div>
     </div>
