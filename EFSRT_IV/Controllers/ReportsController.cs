@@ -32,7 +32,8 @@ namespace EFSRT_IV.Controllers
 
             var ventas = _context.Venta
                 .Where(v => v.IdTienda == storeId)
-                .Select(v => mapperSell(v))
+                .GroupBy(v => v.Fecha)
+                //.Select(v => mapperSell(v))
                 .ToList();
 
             return View(ventas);
