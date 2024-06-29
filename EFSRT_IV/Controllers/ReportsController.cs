@@ -5,6 +5,7 @@ using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Rotativa.AspNetCore;
 using System.Globalization;
 using System.Linq;
@@ -23,7 +24,18 @@ namespace EFSRT_IV.Controllers
         [HttpGet]
         public IActionResult GenerateReport()
         {
-            return View();
+            //OBTENER Y VALIDAR ID DE LA TIENDA ACTUAL
+            string sessionStoreId = getFromSession(Constants.SESSION_STORE_ID_KEY);
+            if (sessionStoreId.IsNullOrEmpty())
+                return RedirectToAction("Index", "User");
+            int storeId = Convert.ToInt32(sessionStoreId);
+
+            var ventas = _context.Venta
+                .Where(v => v.IdTienda == storeId)
+                .Select(v => mapperSell(v))
+                .ToList();
+
+            return View(ventas);
         }
 
         [HttpPost]

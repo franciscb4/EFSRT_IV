@@ -1,4 +1,4 @@
-﻿@model EFSRT_IV.Models.Sell
+﻿@model List<EFSRT_IV.Models.Sell>
 
 @{
     ViewData["Title"] = "Generar Reportes";
@@ -23,6 +23,28 @@
 
     <button type="submit" class="btn btn-primary">Descargar Reporte</button>
 </form>
+
+
+<div class="w-100">
+    <div class="row ps-0">
+        @foreach(var item in Model)
+        {
+            <div class="card px-0 my-2">
+                <div class="card-header">
+                    Fecha @item.date.ToShortDateString()
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Resumen</h5>
+                    <p class="card-text">Cantidad de productos vendidos: 123</p>
+                    <p class="card-text">Cantidad de ventas realizadas: 123</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">PDF</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
 <div id="sideBar">
 </div>
