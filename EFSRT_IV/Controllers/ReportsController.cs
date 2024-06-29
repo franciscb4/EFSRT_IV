@@ -1,10 +1,11 @@
 ﻿using ClosedXML.Excel;
 using CsvHelper;
 using DB.Models;
+using EFSRT_IV.Models;
 using EFSRT_IV.Utils;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using System.Globalization;
 using System.Linq;
 
@@ -50,11 +51,11 @@ namespace EFSRT_IV.Controllers
                     contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     fileName = "reporte " + DateTime.Now.ToString() + ".xlsx";
                     break;
-                case "pdf":
-                    reportData = GeneratePdfReport(productos);
-                    contentType = "application/pdf";
-                    fileName = "productos " + DateTime.Now.ToString() + ".pdf";
-                    break;
+                //case "pdf":
+                //    reportData = GeneratePdfReport(productos);
+                //    contentType = "application/pdf";
+                //    fileName = "productos " + DateTime.Now.ToString() + ".pdf";
+                //    break;
                 case "csv":
                     reportData = GenerateCsvReport(productos);
                     contentType = "text/csv";
@@ -287,54 +288,51 @@ namespace EFSRT_IV.Controllers
             return stream.ToArray();
         }
 
-        public byte[] GeneratePdfReport(List<Producto> productos)
+        public IActionResult ImprimirVenta(int id)
         {
-            using var stream = new MemoryStream();
-            var document = new Document();
-            PdfWriter.GetInstance(document, stream);
-            document.Open();
+            var first = _context.Venta
+                .Include(v => v.DetalleVenta)
+                .ThenInclude(dv => dv.IdProductoNavigation)
+                .FirstOrDefault(v => v.IdVenta == id);
 
-            var table = new PdfPTable(7);
-            table.AddCell("IdProducto");
-            table.AddCell("Nombre");
-            table.AddCell("Precio");
-            table.AddCell("Stock");
-            table.AddCell("Estado");
-            table.AddCell("IdCategoria");
-            table.AddCell("IdTienda");
-
-            foreach (var producto in productos)
+            Sell sell = mapperSell(first);
+            sell.details = first.DetalleVenta.Select(dv => mapperSellDetail(dv)).ToList();
+            return new ViewAsPdf("ImprimirVenta", sell)
             {
-                table.AddCell(producto.IdProducto.ToString());
-                table.AddCell(producto.Nombre);
-                table.AddCell(producto.Precio.ToString());
-                table.AddCell(producto.Stock.ToString());
-                table.AddCell(producto.Estado.ToString());
-                table.AddCell(producto.IdCategoriaProducto.ToString());
-                table.AddCell(producto.IdTienda.ToString());
-            }
-
-            document.Add(table);
-            document.Close();
-            return stream.ToArray();
+                FileName = $"Venta {sell.id}.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
         }
 
         public byte[] GenerateCsvReport(List<Producto> productos)
         {
-            using var stream = new MemoryStream();
-            using var writer = new StreamWriter(stream);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            return null;
+        }
 
-            csv.WriteHeader<Producto>();
-            csv.NextRecord();
-            foreach (var producto in productos)
+        private static Sell mapperSell(Ventum v)
+        {
+            return new Sell()
             {
-                csv.WriteRecord(producto);
-                csv.NextRecord();
-            }
+                id = v.IdVenta,
+                date = v.Fecha,
+                total = v.Monto
+            };
+        }
 
-            writer.Flush();
-            return stream.ToArray();
+        private static SellDetail mapperSellDetail(DetalleVentum dv)
+        {
+            var producto = dv.IdProductoNavigation;
+            SellDetail sellDetail = new SellDetail()
+            {
+                id = dv.IdDetalleVenta,
+                quantity = dv.Cantidad,
+                singlePrice = producto.Precio,
+                subtotal = dv.Subtotal,
+                product = producto.Nombre
+            };
+
+            return sellDetail;
         }
 
         private string getFromSession(string key) => HttpContext.Session.GetString(key);

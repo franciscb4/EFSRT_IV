@@ -31,6 +31,9 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+IWebHostEnvironment env = app.Environment;
+Rotativa.AspNetCore.RotativaConfiguration.Setup(env.WebRootPath, "../Rotativa/Windows");
+
 //using (var scope = app.Services.CreateScope()) {
 //    var context = scope.ServiceProvider.GetRequiredService<EfsrtIvContext>();
 //    context.Database.EnsureCreated();

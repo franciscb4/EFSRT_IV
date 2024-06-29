@@ -1,4 +1,6 @@
-﻿@{
+﻿@model EFSRT_IV.Models.Sell
+
+@{
     ViewData["Title"] = "Generar Reportes";
 }
 
@@ -6,7 +8,7 @@
 <hr />
 
 <form asp-controller="Reports" asp-action="GenerateReport" method="post">
-    <div class="form-group">
+    @* <div class="form-group">
         <label for="format">Selecciona Formato del Reporte:</label>
         <select id="format" name="format" class="form-control" required>
             <option value="">-- Selecciona --</option>
@@ -14,6 +16,18 @@
             <option value="pdf">PDF</option>
             <option value="csv">CSV</option>
         </select>
+    </div> *@
+    <div>
+
     </div>
+
     <button type="submit" class="btn btn-primary">Descargar Reporte</button>
 </form>
+
+<div id="sideBar">
+</div>
+@section Scripts {
+    <script>
+        $("#sideBar").load("/Store/SideBar")
+    </script>
+}
