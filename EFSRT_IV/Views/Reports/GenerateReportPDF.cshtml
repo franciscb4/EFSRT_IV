@@ -1,0 +1,54 @@
+﻿@model List<EFSRT_IV.Models.Sell>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reporte de Ventas</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Reporte de Ventas del @Model.FirstOrDefault()?.date.ToShortDateString()</h1>
+
+        @if (Model == null || !Model.Any())
+        {
+            <p>No hay datos disponibles para la fecha.</p>
+        }
+        else
+        {
+            @foreach (var venta in Model)
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">Venta ID: @venta.id</h2>
+                        <h4>Cantidad de productos: @venta.details.Sum(d => d.quantity)</h4>
+                        <h4>Total: S/ @venta.total</h4>
+
+                        <h3>Detalles de la Venta</h3>
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var detalle in venta.details)
+                                    {
+                                    <tr>
+                                        <td>@detalle.product</td>
+                                        <td>@detalle.quantity</td>
+                                        <td>S/ @detalle.singlePrice</td>
+                                        <td>S/ @detalle.subtotal</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</body>
+</html>

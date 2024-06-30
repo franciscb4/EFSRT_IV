@@ -7,10 +7,9 @@
 <h1>Generar Reportes</h1>
 <hr />
 
-
 <div class="w-100" style="max-height: 60vh; overflow-y: scroll">
     <div class="mx-auto" style="width: 90%">
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
             <div class="card my-2">
                 <div class="card-header">
@@ -20,12 +19,12 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">Resumen</h5>
-                    <p class="card-text">Cantidad de productos vendidos: 123</p>
-                    <p class="card-text">Cantidad de ventas realizadas: 123</p>
-                    <p class="card-text">Total de ingresos: S/123</p>
+                    <p class="card-text">Cantidad de productos vendidos: @item.details.Sum(d => d.quantity)</p>
+                    <p class="card-text">Cantidad de ventas realizadas: @item.details.Count()</p>
+                    <p class="card-text">Total de ingresos: S/@item.total</p>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">PDF</a>
+                    <a href="@Url.Action("GenerateReportPDF", new { date = item.date })" class="btn btn-primary">Descargar PDF</a>
                 </div>
             </div>
         }
@@ -34,6 +33,7 @@
 
 <div id="sideBar">
 </div>
+
 @section Scripts {
     <script>
         $("#sideBar").load("/Store/SideBar")

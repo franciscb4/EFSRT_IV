@@ -71,20 +71,17 @@ namespace EFSRT_IV.Controllers
             var gastosLabels = gastos.Select(g => g.Categoria).ToList();
             var gastosData = gastos.Select(g => g.Total).ToList();
 
-            var ingresos = ventas.GroupJoin(
-                _context.Gastos.Where(g => g.Fecha >= startDate && g.Fecha <= endDate && g.IdTienda == storeId),
-                v => v.Fecha,
-                g => g.Fecha.Date,
-                (v, g) => new { v.Fecha, Ingreso = v.Total - g.Sum(x => x.Monto) })
-                .ToList();
+            var totalVentas = ventas.Sum(v => v.Total);
+            var totalGastos = _context.Gastos
+                .Where(g => g.Fecha >= startDate && g.Fecha <= endDate && g.IdTienda == storeId)
+                .Sum(g => g.Monto);
 
-            var ingresosLabels = ingresos.Select(i => i.Fecha.ToString("dd MMM")).ToList();
-            var ingresosData = ingresos.Select(i => i.Ingreso).ToList();
+            var ingresosTotales = totalVentas - totalGastos;
 
             var model = new ChartViewModel
             {
-                IngresosLabels = ingresosLabels,
-                IngresosData = ingresosData,
+                IngresosLabels = ventasLabels,
+                IngresosData = ventasData.Select((v, index) => v - (index < gastosData.Count ? gastosData[index] : 0)).ToList(),
                 GastosLabels = gastosLabels,
                 GastosData = gastosData,
                 VentasLabels = ventasLabels,
