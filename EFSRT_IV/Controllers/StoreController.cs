@@ -116,7 +116,7 @@ namespace EFSRT_IV.Controllers
                 Estado = true
             });
             _context.SaveChanges();
-            return RedirectToAction();
+            return RedirectToAction("Index");
         }
 
         public IActionResult ChangeStateStore(bool state)

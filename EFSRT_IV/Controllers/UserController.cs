@@ -88,10 +88,11 @@ namespace EFSRT_IV.Controllers
                 Correo = user.email,
                 Dni = user.dni,
                 Telefono = user.phone,
-                Clave = user.password
+                Clave = user.password,
+                Estado = true
             });
             _context.SaveChanges();
-            return View();
+            return RedirectToAction("Login");
         }
 
         public IActionResult LogOut()

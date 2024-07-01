@@ -34,7 +34,7 @@ namespace EFSRT_IV.Controllers
 
             var ventas = _context.Venta
                 .Where(v => v.IdTienda == storeId)
-                .GroupBy(v => v.Fecha)
+                .GroupBy(v => v.Fecha.Date)
                 .Select(v => new Sell
                 {
                     id = v.First().IdVenta,
