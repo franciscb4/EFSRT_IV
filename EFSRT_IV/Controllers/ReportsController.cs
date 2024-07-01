@@ -44,9 +44,9 @@ namespace EFSRT_IV.Controllers
                     {
                         id = x.IdVenta,
                         quantity = x.DetalleVenta.Sum(dv => dv.Cantidad),
-                        singlePrice = x.DetalleVenta.First().IdProductoNavigation.Precio,
-                        subtotal = x.DetalleVenta.Sum(dv => dv.Subtotal),
-                        product = x.DetalleVenta.First().IdProductoNavigation.Nombre
+                        //singlePrice = x.DetalleVenta.First().IdProductoNavigation.Precio,
+                        //subtotal = x.DetalleVenta.Sum(dv => dv.Subtotal),
+                        //product = x.DetalleVenta.First().IdProductoNavigation.Nombre
                     }).ToList()
                 })
                 .OrderByDescending(v => v.date)
